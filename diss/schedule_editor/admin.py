@@ -1,3 +1,11 @@
 from django.contrib import admin
 
-# Register your models here.
+from schedule_editor import models
+
+admin.site.register(models.Discipline)
+admin.site.register(models.Group)
+admin.site.register(models.Student)
+admin.site.register(models.Classroom)
+admin.site.register(models.Teacher)
+admin.site.register(models.Event)
+

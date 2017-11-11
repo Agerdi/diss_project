@@ -1,50 +1,60 @@
 from django.db import models
 
 
-class Disciplines(models.Model):
-    idDiscipline = models.IntegerField(primary_key=True, unique=True)
-    name = models.CharField(max_length=100)
+class Discipline(models.Model):
+    class Meta:
+        verbose_name = 'Дисциплина'
+        verbose_name_plural = 'Дисциплины'
+
+    name = models.CharField('Наименование', max_length=100)
 
 
-class Groups(models.Model):
-    idGroup = models.IntegerField(primary_key=True, unique=True)
-    name = models.CharField(max_length=30)
+class Group(models.Model):
+    class Meta:
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
+
+    name = models.CharField('Наименование', max_length=30)
+    disciplines = models.ManyToManyField('Discipline', verbose_name='Дисциплины')
 
 
-class GroupDiscipline(models.Model):
-    id = models.IntegerField(primary_key=True, unique=True)
-    discipline = models.ForeignKey(Disciplines, on_delete=models.CASCADE, default=0)
-    group = models.ForeignKey(Groups, on_delete=models.CASCADE, default=0)
+class Student(models.Model):
+    class Meta:
+        verbose_name = 'Студент'
+        verbose_name_plural = 'Студенты'
+
+    fullname = models.CharField('Полное имя', max_length=50)
+    group = models.ForeignKey('Group')
+    disciplines = models.ManyToManyField('Discipline', verbose_name='Дисциплины')
 
 
-class Students(models.Model):
-    id = models.IntegerField(primary_key=True, unique=True)
-    group = models.ForeignKey(Groups, on_delete=models.CASCADE, default=0)
+class Classroom(models.Model):
+    class Meta:
+        verbose_name = 'Аудитория'
+        verbose_name_plural = 'Аудитории'
+
+    number = models.CharField('Номер', max_length=50)
+    build = models.CharField('Здание', max_length=50)
 
 
-class StudentDiscipline(models.Model):
-    id = models.IntegerField(primary_key=True, unique=True)
-    discipline = models.ForeignKey(Disciplines, on_delete=models.CASCADE, default=0)
-    student = models.ForeignKey(Students, on_delete=models.CASCADE, default=0)
+class Teacher(models.Model):
+    class Meta:
+        verbose_name = 'Преподаватель'
+        verbose_name_plural = 'Преподаватели'
+
+    fullname = models.CharField('Полное имя', max_length=50)
 
 
-class Classrooms(models.Model):
-    idGroup = models.IntegerField(primary_key=True, unique=True)
-    number = models.CharField(max_length=50)
-    build = models.CharField(max_length=50)
+class Event(models.Model):
+    class Meta:
+        verbose_name = 'Событие'
+        verbose_name_plural = 'События'
 
+    discipline = models.ForeignKey('Discipline', verbose_name='Дисциплина', blank=True, null=True)
+    classroom = models.ForeignKey('Classroom', verbose_name='Аудитория')
+    teacher = models.ForeignKey('Teacher', verbose_name='Преподаватель', blank=True, null=True)
+    begin = models.DateTimeField('Начало')
+    end = models.DateTimeField('Окончание')
+    event_type = models.CharField('Тип события', max_length=30)
+    description = models.TextField('Описание')
 
-class Teachers(models.Model):
-    idGroup = models.IntegerField(primary_key=True, unique=True)
-    fullname = models.CharField(max_length=50)
-
-
-class Events(models.Model):
-    idEvent = models.IntegerField(primary_key=True, unique=True)
-    idDiscipline = models.ForeignKey(Disciplines, on_delete=models.CASCADE, default=0)
-    idClassroom = models.ForeignKey(Classrooms, on_delete=models.CASCADE, default=0)
-    idTeacher = models.ForeignKey(Teachers, on_delete=models.CASCADE, default=0)
-    begin = models.DateTimeField('begin')
-    end = models.DateTimeField('end')
-    type = models.CharField(max_length=30)
-    description = models.TextField()
