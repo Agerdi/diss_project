@@ -1,0 +1,23 @@
+{% extends "schedule_editor/base.html" %}
+{% block body %}
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'index' %}">Главная</a>
+            </div>
+            <ul class="nav navbar-nav">
+                {% if perms.ruler.add_template %}
+                    <li{% if request.resolver_match.namespace == 'room' %} class="active"{% endif %}>
+                        <a href="{% url 'index' %}">Аудитории</a>
+                    </li>
+                {% endif %}
+                {% if perms.ruler.add_batch %}
+                    <li{% if request.resolver_match.namespace == 'subject' %} class="active"{% endif %}>
+                        <a href="{% url 'index' %}">Дисциплины</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    {% block content %}{% endblock %}
+{% endblock %}

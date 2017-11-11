@@ -1,0 +1,168 @@
+{% extends 'schedule_editor/menu.html' %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h1>Редактор расписания{% if group %} {{ group }}{% endif %}</h1>
+                <div id="graph"></div>
+                <a href="{% url 'week' prev_week.year prev_week.month prev_week.day %}" class="btn btn-primary">Предыдущая неделя</a>
+                <a href="{% url 'week' next_week.year next_week.month next_week.day %}" class="btn btn-primary">Следующая неделя</a>
+                <span class="form-inline">
+                    <span class="form-group">
+                        <label for="group">Группа</label>
+                        <select id="group" class="form-control" onchange="changeGroup(event)">
+                            <option value="">------</option>
+                            {% for g in groups %}
+                                <option value="{{ g.id }}"{% if g == group %} selected{% endif %}>{{ g }}</option>
+                            {% endfor %}
+                        </select>
+                    </span>
+                </span>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        var start = new Date({{ start|date:"U" }}000);
+        var svgNS = "http://www.w3.org/2000/svg";
+        var width = ($('.container').prop('clientWidth') - 60) / 6;
+        var events = [
+            {% for event in events %}
+                {
+                    id: "{{ event.id }}",
+                    name: "{{ event.name }}",
+                    leader: "{{ event.leader }}",
+                    participants: "{{ event.participants }}",
+                    room: "{{ event.room }}",
+                    subject: "{{ event.subject }}",
+                    begin: new Date({{ event.begin|date:'U' }}000),
+                    end: new Date({{ event.end|date:'U' }}000)
+                }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        var svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '611');
+
+        // Фоновая сетка
+        function createHourRect(x, y) {
+            var rect = document.createElementNS(svgNS, 'rect');
+            rect.setAttribute('x', x);
+            rect.setAttribute('y', y);
+            rect.setAttribute('width', (width - 6).toString());
+            rect.setAttribute('height', '50');
+            rect.setAttribute('fill', 'white');
+            rect.setAttribute('stroke', 'black');
+            rect.setAttribute('stroke-opacity', '0.5');
+            rect.setAttribute('opacity', '0.5');
+            svg.appendChild(rect);
+        }
+
+        // Отметки часов
+        function createHourLabel(hour, y) {
+            var hourLabel = hour + 8;
+            var text = document.createElementNS(svgNS, 'text');
+            text.setAttribute('x', '0');
+            text.setAttribute('y', y);
+            text.setAttribute('dy', "11");
+            text.innerHTML = ((hourLabel < 10) ? '0' : '') + hourLabel + '.00';
+            svg.appendChild(text);
+        }
+
+        // Отметки даты
+        function createDayLabel(dayOfWeek, x) {
+            var currentDate = new Date(start);
+            currentDate.setDate(currentDate.getDate() + dayOfWeek);
+            var text = document.createElementNS(svgNS, 'text');
+            text.setAttribute('x', x);
+            text.setAttribute('y', '0');
+            text.setAttribute('dy', "9");
+            text.innerHTML = currentDate.toISOString().slice(0, 10);
+            svg.appendChild(text);
+        }
+
+        // function click(event) {
+        //     window.location.href = {% url 'index' %} +event.target.getAttribute('data-id');
+        // }
+
+        function changeGroup(event) {
+            var options = event.target.children;
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].selected) {
+                    window.location.href = "{% url 'week' request.resolver_match.kwargs.year request.resolver_match.kwargs.month request.resolver_match.kwargs.day %}" + options[i].value;
+                }
+            }
+        }
+
+        // Прямоугольник с событием
+        function createEvent(x, y, event) {
+            var rect = document.createElementNS(svgNS, 'rect');
+            rect.setAttribute('x', x);
+            rect.setAttribute('y', y);
+            rect.setAttribute('width', (width - 16).toString());
+            rect.setAttribute('height', '79');
+            rect.setAttribute('fill', 'lightblue');
+            rect.setAttribute('stroke', 'black');
+            rect.setAttribute('data-id', event.id);
+            rect.setAttribute('onclick', 'click(event)');
+            svg.appendChild(rect);
+
+            var wrap1 = document.createElementNS(svgNS, 'switch');
+            var wrap2 = document.createElementNS(svgNS, 'foreignObject');
+            wrap2.setAttribute('x', x + 5);
+            wrap2.setAttribute('y', y + 5);
+            wrap2.setAttribute('width', (width - 26).toString());
+            wrap2.setAttribute('height', '69');
+
+            var par = document.createElement('p');
+            par.innerHTML = event.name + ' ' + event.room + ' ' + event.subject + ' ' + event.participants + ' ' + event.leader;
+
+            wrap2.appendChild(par);
+            wrap1.appendChild(wrap2);
+            svg.appendChild(wrap1);
+        }
+
+        var hourLabelWidth = 35;
+        var dayLabelHeight = 10;
+        var hourHeight = 50;
+
+        // Сетка дней
+        for (var i = 0; i < 6; i++) {
+            var x = hourLabelWidth + i * width;
+
+            // Сетка часов
+            for (var j = 0; j < 12; j++) {
+                var y = dayLabelHeight + j * hourHeight;
+                createHourRect(x.toString(), y.toString());
+                if (i === 0)
+                    createHourLabel(j, y);
+            }
+            createDayLabel(i, x);
+        }
+
+        // Вывод событий
+        for (i = 0; i < events.length; i++) {
+            // Минуты с начала недели
+            var time = (events[i].begin.getTime() - start.getTime()) / 1000 / 60;
+
+            // День недели
+            var dayOfWeek = Math.floor(time / (24 * 60));
+
+            // Минуты с начала дня
+            var minutes = time % (24 * 60);
+
+            // Если событие за пределами рабочего дня - не показываем его
+            if ((minutes < (8 * 60)) || (minutes > (20 * 60)))
+                continue;
+
+            x = 40 + dayOfWeek * width;
+            y = 10 + (minutes - (8 * 60)) / 60 * 50;
+            createEvent(x, y, events[i]); 
+        }
+
+        var graph = document.getElementById('graph');
+        graph.appendChild(svg);
+    </script>
+{% endblock %}
