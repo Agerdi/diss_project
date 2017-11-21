@@ -32,10 +32,10 @@
                 {
                     id: "{{ event.id }}",
                     name: "{{ event.name }}",
-                    leader: "{{ event.leader }}",
-                    participants: "{{ event.participants }}",
-                    room: "{{ event.room }}",
-                    subject: "{{ event.subject }}",
+                    teacher: "{{ event.teacher }}",
+                    description: "{{ event.description }}",
+                    classroom: "{{ event.classroom }}",
+                    discipline: "{{ event.discipline }}",
                     begin: new Date({{ event.begin|date:'U' }}000),
                     end: new Date({{ event.end|date:'U' }}000)
                 }{% if not forloop.last %},{% endif %}
@@ -74,7 +74,7 @@
         // Отметки даты
         function createDayLabel(dayOfWeek, x) {
             var currentDate = new Date(start);
-            currentDate.setDate(currentDate.getDate() + dayOfWeek);
+            currentDate.setDate(currentDate.getDate() + dayOfWeek + 1); <!--Добавил +1, чтоб скорректировать дату в сетке-->
             var text = document.createElementNS(svgNS, 'text');
             text.setAttribute('x', x);
             text.setAttribute('y', '0');
@@ -82,10 +82,11 @@
             text.innerHTML = currentDate.toISOString().slice(0, 10);
             svg.appendChild(text);
         }
-
-        // function click(event) {
-        //     window.location.href = {% url 'index' %} +event.target.getAttribute('data-id');
-        // }
+        //Переход на другую страницу по клику на событие.
+        //Не понял, как переходить по имени URL-адреса
+        function click(event) {
+             window.location.href = "http://127.0.0.1:8000/w/2017-11-14";
+        }
 
         function changeGroup(event) {
             var options = event.target.children;
@@ -117,7 +118,7 @@
             wrap2.setAttribute('height', '69');
 
             var par = document.createElement('p');
-            par.innerHTML = event.name + ' ' + event.room + ' ' + event.subject + ' ' + event.participants + ' ' + event.leader;
+            par.innerHTML = event.name + ' ' + event.discipline + ' ' + event.classroom + ' ' + event.teacher + ' ' + event.description;
 
             wrap2.appendChild(par);
             wrap1.appendChild(wrap2);
