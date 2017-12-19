@@ -2,3 +2,9 @@
 db.sqlite3
 migrations/
 venv/
+.ropeproject/
+*.aux
+*.bbl
+*.blg
+*.log
+*.toc

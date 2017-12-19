@@ -1,0 +1,32 @@
+\documentclass[12pt]{report}
+\include{preamble}
+
+\title{Разработка веб-приложения для редактирования расписания учебных занятий}
+\thesis{Магистерская диссертация}
+\specialty{09.04.01 «Информатика и вычислительные техника»}
+\author{Татаринов Артём Олегович}
+\student{магистрант группы М-ИВТ-17}
+\teacher{Леверьев Владимир Семенович}
+\position{ст. преп. каф. ИТ}
+
+\begin{document}
+
+% Титульная страница
+\include{title}
+
+% Оглавление
+\newpage
+\setcounter{page}{2}
+\tableofcontents
+
+\include{introduction} % Введение
+
+\include{chapter1} % Глава 1
+
+\include{conclusion} % Заключение
+
+% Библиография
+\bibliography{references}
+\addcontentsline{toc}{chapter}{\bibname}
+
+\end{document}

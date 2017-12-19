@@ -1,0 +1,54 @@
+% Поддержка русского языка
+\usepackage[english, russian]{babel}
+
+% Поля
+\usepackage[a4paper, top=20mm, left=30mm, right=15mm, bottom=20mm]{geometry}
+
+% Шрифты
+\usepackage{fontspec}
+\defaultfontfeatures[\rmfamily, \sffamily]{Ligatures={TeX}}
+\setmainfont[Ligatures={TeX}]{Times New Roman} % Основной шрифт
+\setsansfont[Ligatures={TeX}]{Arial} % Шрифт без засечек
+\setmonofont[]{Consolas} % Моноширинный шрифт
+
+% Интерлиньяж 1.5 строки
+\usepackage{setspace}
+\setstretch{1.5}
+
+% Заголовки
+\usepackage{titlesec}
+\titleformat{\chapter} % command
+  {\bfseries\Large} % format
+  {\chaptername\ \thechapter.\ } % label
+  {0pt} % sep
+  {\centering} % before
+\titlespacing{\chapter}
+  {0mm} % left
+  {0mm} % before-sep
+  {0mm} % after-sep
+
+% Красная строка
+\usepackage{indentfirst}
+
+% ГОСТ 7.0.5-2008
+\makeatletter
+\bibliographystyle{ugost2008}
+\renewcommand{\@biblabel}[1]{#1.}
+\makeatother
+\addto{\captionsrussian}{
+  \renewcommand\bibname{Список использованных источников}
+}
+
+% Переменные для титульной страницы
+\makeatletter
+\newcommand\thesis[1]{\renewcommand\@thesis{#1}}
+\newcommand\@thesis{}
+\newcommand\specialty[1]{\renewcommand\@specialty{#1}}
+\newcommand\@specialty{}
+\newcommand\student[1]{\renewcommand\@student{#1}}
+\newcommand\@student{}
+\newcommand\teacher[1]{\renewcommand\@teacher{#1}}
+\newcommand\@teacher{}
+\newcommand\position[1]{\renewcommand\@position{#1}}
+\newcommand\@position{}
+\makeatother
