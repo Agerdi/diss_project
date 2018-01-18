@@ -83,9 +83,8 @@
             svg.appendChild(text);
         }
         //Переход на другую страницу по клику на событие.
-        //Не понял, как переходить по имени URL-адреса
         function click(event) {
-             window.location.href = "http://127.0.0.1:8000/w/2017-11-14";
+            window.location.href = "{% url 'index' %}";
         }
 
         function changeGroup(event) {
@@ -160,7 +159,7 @@
 
             x = 40 + dayOfWeek * width;
             y = 10 + (minutes - (8 * 60)) / 60 * 50;
-            createEvent(x, y, events[i]); 
+            createEvent(x, y, events[i]);
         }
 
         var graph = document.getElementById('graph');
