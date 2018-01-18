@@ -84,7 +84,42 @@
         }
         //Переход на другую страницу по клику на событие.
         function click(event) {
-            window.location.href = "{% url 'index' %}";
+            //window.location.href = "{% url 'index' %}";
+            var lol = event.target;
+            lol.setAttribute("fill", "red");
+            //lol.setAttribute("x", "50");
+        }
+
+        //Передвижение элемента
+        function move(event) {
+            var rect1 = event.target;
+            var x = y = 0;
+            <!--var x = rect1.getAttribute("x")-->
+            <!--var y = rect1.getAttribute("y")-->
+            document.onmousemove=function(e){
+                <!--x = e.PageX;-->
+                <!--y = e.PageY;-->
+                x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+                y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+                <!--left=rect1.offsetLeft;-->
+                <!--top=rect1.offsetTop;-->
+                <!--left = x - left;-->
+                <!--top = y - top;-->
+
+                <!--document.onmousemove=function(e){-->
+                    <!--x = e.PageX;-->
+                    <!--y = e.PageY;-->
+                    <!--rect.style.top = y - top 'px';-->
+                    <!--rect.style.left = x - left 'px';-->
+                    rect1.setAttribute("x", x);
+                    rect1.setAttribute("y", y);
+                <!--}-->
+
+            }
+            document.onmouseup=function() {
+                document.onmousedown = function() {}
+                document.onmousemove = function() {}
+            }
         }
 
         function changeGroup(event) {
@@ -107,6 +142,7 @@
             rect.setAttribute('stroke', 'black');
             rect.setAttribute('data-id', event.id);
             rect.setAttribute('onclick', 'click(event)');
+            rect.setAttribute('onmousedown', 'move(event)');
             svg.appendChild(rect);
 
             var wrap1 = document.createElementNS(svgNS, 'switch');
