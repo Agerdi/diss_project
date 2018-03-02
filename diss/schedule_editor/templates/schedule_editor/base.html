@@ -1,24 +1,20 @@
 {% load static %}
 <!doctype html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>{% block title %}Расписание{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" href="{% static 'schedule_editor/favicon.ico' %}">
     <link rel="stylesheet" href="{% static 'schedule_editor/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'schedule_editor/css/bootstrap-datetimepicker.min.css' %}">
+    <link rel="stylesheet" href="{% static 'schedule_editor/css/fontawesome-all.min.css' %}">
     <link rel="stylesheet" href="{% static 'schedule_editor/css/styles.css' %}">
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <title>{% block title %}Расписание{% endblock %}</title>
 </head>
 <body>
 {% block body %}{% endblock %}
-<script src="{% static 'schedule_editor/js/jquery-3.2.1.min.js' %}"></script>
-<script src="{% static 'schedule_editor/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'schedule_editor/js/jquery-3.3.1.slim.min.js' %}"></script>
+<script src="{% static 'schedule_editor/js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'schedule_editor/js/bootstrap-datetimepicker.min.js' %}"></script>
 <script src="{% static 'schedule_editor/js/bootstrap-datetimepicker.ru.js' %}"></script>
 {% block scripts %}{% endblock %}
