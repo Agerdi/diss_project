@@ -1,23 +1,26 @@
 {% extends "schedule_editor/base.html" %}
 {% block body %}
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="{% url 'index' %}">Главная</a>
-            </div>
-            <ul class="nav navbar-nav">
-                {% if perms.ruler.add_template %}
-                    <li{% if request.resolver_match.namespace == 'room' %} class="active"{% endif %}>
-                        <a href="{% url 'index' %}">Аудитории</a>
-                    </li>
-                {% endif %}
-                {% if perms.ruler.add_batch %}
-                    <li{% if request.resolver_match.namespace == 'subject' %} class="active"{% endif %}>
-                        <a href="{% url 'index' %}">Дисциплины</a>
-                    </li>
-                {% endif %}
-            </ul>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="{% url 'index' %}">Расписание занятий</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item{% if request.resolver_match.url_name == 'index' %} active{% endif %}">
+                            <a class="nav-link" href="{% url 'index' %}">Главная</a>
+                        </li>
+                        <li class="nav-item{% if request.resolver_match.url_name == 'subject_list' %} active{% endif %}">
+                            <a class="nav-link" href="{% url 'subject_list' %}">Дисциплины</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
         </div>
-    </nav>
-    {% block content %}{% endblock %}
+    </div>
+</div>
+{% block content %}{% endblock %}
 {% endblock %}

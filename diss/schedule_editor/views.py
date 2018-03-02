@@ -1,11 +1,40 @@
 import datetime
-from django.shortcuts import render
+
 from django.contrib.auth.models import Group
-from schedule_editor import models
+from django.shortcuts import render, get_object_or_404, redirect
+
+from schedule_editor import models, forms
 
 
 def index(request):
     return render(request, "schedule_editor/menu.html", {})
+
+
+def subject_list_page(request):
+    """ Страница списка дисциплин """
+    subject_list = models.Discipline.objects.all()
+    return render(request, "schedule_editor/subject_list.html", {
+        'subject_list': subject_list
+    })
+
+
+def subject_update_page(request, subject_id=None):
+    """ Страница создания / редактирования дисциплины """
+    subject = None if subject_id is None else get_object_or_404(models.Discipline, pk=subject_id)
+    if request.method == 'POST':
+        form = forms.SubjectForm(request.POST, instance=subject)
+        if form.is_valid():
+            form.save()
+            return redirect('subject_list')
+    else:
+        form = forms.SubjectForm(instance=subject)
+    return render(request, 'schedule_editor/subject_form.html', {'form': form, 'subject': subject})
+
+
+def subject_remove_page(request, subject_id):
+    subject = get_object_or_404(models.Discipline, pk=subject_id)
+    subject.delete()
+    return redirect('subject_list')
 
 
 def week(request, year, month, day, group_id=None):
