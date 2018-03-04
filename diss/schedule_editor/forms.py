@@ -8,3 +8,10 @@ class SubjectForm(forms.ModelForm):
     class Meta:
         exclude = ['author', 'last_modified']
         model = models.Discipline
+
+
+class TeacherForm(forms.ModelForm):
+    """ Форма редактирования преподавателя """
+    class Meta:
+        fields = ['last_name', 'first_name', 'second_name', 'user']
+        model = models.Teacher

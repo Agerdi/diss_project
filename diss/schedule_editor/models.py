@@ -46,15 +46,19 @@ class Classroom(models.Model):
 
 
 class Teacher(models.Model):
-    fullname = models.CharField('Полное имя', max_length=50)
+    """ Преподаватели """
+    last_name = models.CharField('фамилия', max_length=50)
+    first_name = models.CharField('имя', max_length=50)
+    second_name = models.CharField('отчество', max_length=50, blank=True, default='')
+    user = models.OneToOneField('auth.User', on_delete=models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        verbose_name = 'Преподаватель'
-        verbose_name_plural = 'Преподаватели'
-        # ordering = ['name']
+        verbose_name = 'преподаватель'
+        verbose_name_plural = 'преподаватели'
+        ordering = ['last_name', 'first_name', 'second_name']
 
     def __str__(self):
-        return self.fullname
+        return '%s %s %s' % (self.last_name, self.first_name, self.second_name)
 
 
 class Event(models.Model):

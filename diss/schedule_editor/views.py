@@ -35,6 +35,27 @@ def subject_remove_page(request, subject_id):
     subject = get_object_or_404(models.Discipline, pk=subject_id)
     subject.delete()
     return redirect('subject_list')
+def teacher_list_page(request):
+    """ Страница списка преподавателей """
+    if request.method == 'POST':
+        teacher = get_object_or_404(models.Teacher, pk=request.POST.get('teacher'))
+        teacher.delete()
+    return render(request, "schedule_editor/teacher_list.html", {
+        'teacher_list': models.Teacher.objects.all()
+    })
+
+
+def teacher_update_page(request, teacher_id=None):
+    """ Страница создания / редактирования преподавателя """
+    teacher = None if teacher_id is None else get_object_or_404(models.Teacher, pk=teacher_id)
+    if request.method == 'POST':
+        form = forms.TeacherForm(request.POST, instance=teacher)
+        if form.is_valid():
+            form.save()
+            return redirect('teacher_list')
+    else:
+        form = forms.TeacherForm(instance=teacher)
+    return render(request, 'schedule_editor/teacher_form.html', {'form': form, 'teacher': teacher})
 
 
 def week(request, year, month, day, group_id=None):

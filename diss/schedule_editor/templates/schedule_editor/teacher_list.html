@@ -1,0 +1,20 @@
+{% extends 'schedule_editor/menu.html' %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Список преподавателей</h1>
+                {% if teacher_list %}
+                    <ul>
+                        {% for teacher in teacher_list %}
+                            <li><a href="{% url 'teacher_update' teacher.id %}">{{ teacher }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>Данные о преподавателей еще не введены.</p>
+                {% endif %}
+                <a href="{% url 'teacher_create' %}" class="btn btn-primary">Добавить</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
