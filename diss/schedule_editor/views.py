@@ -79,6 +79,29 @@ def room_update_page(request, room_id=None):
     return render(request, 'schedule_editor/room_form.html', {'form': form, 'room': room})
 
 
+def student_group_list_page(request):
+    """ Страница списка учебных групп """
+    if request.method == 'POST':
+        student_group = get_object_or_404(models.StudentGroup, pk=request.POST.get('student_group'))
+        student_group.delete()
+    return render(request, "schedule_editor/student_group_list.html", {
+        'student_group_list': models.StudentGroup.objects.all()
+    })
+
+
+def student_group_update_page(request, student_group_id=None):
+    """ Страница создания / редактирования учебных групп """
+    student_group = None if student_group_id is None else get_object_or_404(models.StudentGroup, pk=student_group_id)
+    if request.method == 'POST':
+        form = forms.StudentGroupForm(request.POST, instance=student_group)
+        if form.is_valid():
+            form.save()
+            return redirect('student_group_list')
+    else:
+        form = forms.StudentGroupForm(instance=student_group)
+    return render(request, 'schedule_editor/student_group_form.html', {'form': form, 'student_group': student_group})
+
+
 def week(request, year, month, day, group_id=None):
     year, month, day = int(year), int(month), int(day)
     request.session['year'] = year

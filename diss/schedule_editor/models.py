@@ -3,6 +3,7 @@ from django.db import models
 
 class Discipline(models.Model):
     name = models.CharField('наименование', max_length=100)
+    student_group = models.ForeignKey('StudentGroup', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'дисциплина'
@@ -13,18 +14,22 @@ class Discipline(models.Model):
         return self.name
 
 
-class Group(models.Model):
+class StudentGroup(models.Model):
     name = models.CharField('наименование', max_length=30)
-    disciplines = models.ManyToManyField('Discipline', verbose_name='дисциплины')
+    year = models.IntegerField('год поступления')
 
     class Meta:
         verbose_name = 'группа'
         verbose_name_plural = 'группы'
+        ordering = ['year', 'name']
+
+    def __str__(self):
+        return self.name
 
 
 class Student(models.Model):
     fullname = models.CharField('полное имя', max_length=50)
-    group = models.ForeignKey('Group', on_delete=models.CASCADE)
+    student_group = models.ForeignKey('StudentGroup', on_delete=models.CASCADE)
     disciplines = models.ManyToManyField('Discipline', verbose_name='дисциплины')
 
     class Meta:

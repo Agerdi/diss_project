@@ -22,3 +22,10 @@ class RoomForm(forms.ModelForm):
     class Meta:
         fields = ['number', 'building']
         model = models.Room
+
+
+class StudentGroupForm(forms.ModelForm):
+    """ Форма редактирования учебной группы """
+    class Meta:
+        fields = ['name', 'year']
+        model = models.StudentGroup
