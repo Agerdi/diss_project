@@ -48,7 +48,7 @@ class Room(models.Model):
         ordering = ['building', 'number']
 
     def __str__(self):
-        return self.building + ' ' + self.number
+        return '%s, ауд. %s' % (self.building, self.number)
 
 
 class Teacher(models.Model):
