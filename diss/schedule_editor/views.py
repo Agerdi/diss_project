@@ -12,9 +12,11 @@ def index(request):
 
 def subject_list_page(request):
     """ Страница списка дисциплин """
-    subject_list = models.Discipline.objects.all()
+    if request.method == 'POST':
+        subject = get_object_or_404(models.Discipline, pk=request.POST.get('subject'))
+        subject.delete()
     return render(request, "schedule_editor/subject_list.html", {
-        'subject_list': subject_list
+        'subject_list': models.Discipline.objects.all()
     })
 
 
@@ -31,10 +33,6 @@ def subject_update_page(request, subject_id=None):
     return render(request, 'schedule_editor/subject_form.html', {'form': form, 'subject': subject})
 
 
-def subject_remove_page(request, subject_id):
-    subject = get_object_or_404(models.Discipline, pk=subject_id)
-    subject.delete()
-    return redirect('subject_list')
 def teacher_list_page(request):
     """ Страница списка преподавателей """
     if request.method == 'POST':

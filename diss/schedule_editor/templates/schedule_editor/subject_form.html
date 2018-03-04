@@ -47,10 +47,11 @@
                         Вы действительно хотите удалить дисциплину?
                     </div>
                     <div class="modal-footer">
-                        <a type="button" class="btn btn-danger" href="{% url 'subject_remove' form.instance.id %}">
-                            <i class="fas fa-user"></i>
-                            Удалить
-                        </a>
+                        <form action="{% url 'subject_list' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="subject" value="{{ form.instance.id }}">
+                            <input type="submit" class="btn btn-danger" value="Удалить">
+                        </form>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
                     </div>
                 </div>
