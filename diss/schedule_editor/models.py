@@ -2,11 +2,11 @@ from django.db import models
 
 
 class Discipline(models.Model):
-    name = models.CharField('Наименование', max_length=100)
+    name = models.CharField('наименование', max_length=100)
 
     class Meta:
-        verbose_name = 'Дисциплина'
-        verbose_name_plural = 'Дисциплины'
+        verbose_name = 'дисциплина'
+        verbose_name_plural = 'дисциплины'
         ordering = ['name']
 
     def __str__(self):
@@ -14,35 +14,36 @@ class Discipline(models.Model):
 
 
 class Group(models.Model):
-    name = models.CharField('Наименование', max_length=30)
-    disciplines = models.ManyToManyField('Discipline', verbose_name='Дисциплины')
+    name = models.CharField('наименование', max_length=30)
+    disciplines = models.ManyToManyField('Discipline', verbose_name='дисциплины')
 
     class Meta:
-        verbose_name = 'Группа'
-        verbose_name_plural = 'Группы'
+        verbose_name = 'группа'
+        verbose_name_plural = 'группы'
 
 
 class Student(models.Model):
-    fullname = models.CharField('Полное имя', max_length=50)
+    fullname = models.CharField('полное имя', max_length=50)
     group = models.ForeignKey('Group', on_delete=models.CASCADE)
-    disciplines = models.ManyToManyField('Discipline', verbose_name='Дисциплины')
+    disciplines = models.ManyToManyField('Discipline', verbose_name='дисциплины')
 
     class Meta:
-        verbose_name = 'Студент'
-        verbose_name_plural = 'Студенты'
+        verbose_name = 'студент'
+        verbose_name_plural = 'студенты'
 
 
-class Classroom(models.Model):
-    number = models.CharField('Номер', max_length=50)
-    build = models.CharField('Здание', max_length=50)
+class Room(models.Model):
+    """ Аудитории """
+    number = models.CharField('номер', max_length=50)
+    building = models.CharField('здание', max_length=50)
 
     class Meta:
-        verbose_name = 'Аудитория'
-        verbose_name_plural = 'Аудитории'
-        ordering = ['number']
+        verbose_name = 'аудитория'
+        verbose_name_plural = 'аудитории'
+        ordering = ['building', 'number']
 
     def __str__(self):
-        return self.number + ' ' + self.build
+        return self.building + ' ' + self.number
 
 
 class Teacher(models.Model):
@@ -62,16 +63,17 @@ class Teacher(models.Model):
 
 
 class Event(models.Model):
+    """ События """
     discipline = models.ForeignKey('Discipline', on_delete=models.CASCADE, blank=True, null=True,
-                                   verbose_name='Дисциплина')
-    classroom = models.ForeignKey('Classroom', on_delete=models.CASCADE, verbose_name='Аудитория')
+                                   verbose_name='дисциплина')
+    room = models.ForeignKey('Room', on_delete=models.CASCADE, verbose_name='аудитория')
     teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE, blank=True, null=True,
-                                verbose_name='Преподаватель')
-    begin = models.DateTimeField('Начало')
-    end = models.DateTimeField('Окончание')
-    event_type = models.CharField('Тип события', max_length=30)
-    description = models.TextField('Описание')
+                                verbose_name='преподаватель')
+    begin = models.DateTimeField('начало')
+    end = models.DateTimeField('окончание')
+    event_type = models.CharField('тип события', max_length=30)
+    description = models.TextField('описание')
 
     class Meta:
-        verbose_name = 'Событие'
-        verbose_name_plural = 'События'
+        verbose_name = 'событие'
+        verbose_name_plural = 'события'

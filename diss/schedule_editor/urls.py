@@ -13,5 +13,9 @@ urlpatterns = [
     path('teacher/create/', views.teacher_update_page, name='teacher_create'),
     path('teacher/update/<int:teacher_id>/', views.teacher_update_page, name='teacher_update'),
 
+    path('room/list/', views.room_list_page, name='room_list'),
+    path('room/create/', views.room_update_page, name='room_create'),
+    path('room/update/<int:room_id>/', views.room_update_page, name='room_update'),
+
     re_path(r'^w/(?P<year>[0-9]{4})-(?P<month>[0-9]{1,2})-(?P<day>[0-9]{1,2})/$', views.week, name='week'),
 ]

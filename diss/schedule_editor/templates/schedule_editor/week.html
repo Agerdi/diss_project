@@ -34,7 +34,7 @@
                     name: "{{ event.name }}",
                     teacher: "{{ event.teacher }}",
                     description: "{{ event.description }}",
-                    classroom: "{{ event.classroom }}",
+                    room: "{{ event.room }}",
                     discipline: "{{ event.discipline }}",
                     begin: new Date({{ event.begin|date:'U' }}000),
                     end: new Date({{ event.end|date:'U' }}000)
@@ -153,7 +153,7 @@
             wrap2.setAttribute('height', '69');
 
             var par = document.createElement('p');
-            par.innerHTML = event.name + ' ' + event.discipline + ' ' + event.classroom + ' ' + event.teacher + ' ' + event.description;
+            par.innerHTML = event.name + ' ' + event.discipline + ' ' + event.room + ' ' + event.teacher + ' ' + event.description;
 
             wrap2.appendChild(par);
             wrap1.appendChild(wrap2);

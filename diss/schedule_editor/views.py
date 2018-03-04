@@ -56,6 +56,29 @@ def teacher_update_page(request, teacher_id=None):
     return render(request, 'schedule_editor/teacher_form.html', {'form': form, 'teacher': teacher})
 
 
+def room_list_page(request):
+    """ Страница списка дисциплин """
+    if request.method == 'POST':
+        room = get_object_or_404(models.Room, pk=request.POST.get('room'))
+        room.delete()
+    return render(request, "schedule_editor/room_list.html", {
+        'room_list': models.Room.objects.all()
+    })
+
+
+def room_update_page(request, room_id=None):
+    """ Страница создания / редактирования дисциплины """
+    room = None if room_id is None else get_object_or_404(models.Room, pk=room_id)
+    if request.method == 'POST':
+        form = forms.RoomForm(request.POST, instance=room)
+        if form.is_valid():
+            form.save()
+            return redirect('room_list')
+    else:
+        form = forms.RoomForm(instance=room)
+    return render(request, 'schedule_editor/room_form.html', {'form': form, 'room': room})
+
+
 def week(request, year, month, day, group_id=None):
     year, month, day = int(year), int(month), int(day)
     request.session['year'] = year

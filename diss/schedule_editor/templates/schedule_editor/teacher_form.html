@@ -51,11 +51,11 @@
                     </div>
 
                     <input type="submit" class="btn btn-primary" value="Сохранить">
-                        {% if form.instance.id %}
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmRemove">
-                                Удалить
-                            </button>
-                        {% endif %}
+                    {% if form.instance.id %}
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmRemove">
+                            Удалить
+                        </button>
+                    {% endif %}
                     <a href="{% url 'teacher_list' %}" class="btn btn-secondary">Отмена</a>
                 </form>
             </div>

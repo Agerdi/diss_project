@@ -15,3 +15,10 @@ class TeacherForm(forms.ModelForm):
     class Meta:
         fields = ['last_name', 'first_name', 'second_name', 'user']
         model = models.Teacher
+
+
+class RoomForm(forms.ModelForm):
+    """ Форма редактирования преподавателя """
+    class Meta:
+        fields = ['number', 'building']
+        model = models.Room
