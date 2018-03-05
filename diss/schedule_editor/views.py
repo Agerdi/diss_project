@@ -102,6 +102,29 @@ def student_group_update_page(request, student_group_id=None):
     return render(request, 'schedule_editor/student_group_form.html', {'form': form, 'student_group': student_group})
 
 
+def semester_list_page(request):
+    """ Страница графика учебного процесса """
+    if request.method == 'POST':
+        semester = get_object_or_404(models.Semester, pk=request.POST.get('semester'))
+        semester.delete()
+    return render(request, "schedule_editor/semester_list.html", {
+        'semester_list': models.Semester.objects.all()
+    })
+
+
+def semester_update_page(request, semester_id=None):
+    """ Страница создания / редактирования семестра """
+    semester = None if semester_id is None else get_object_or_404(models.Semester, pk=semester_id)
+    if request.method == 'POST':
+        form = forms.SemesterForm(request.POST, instance=semester)
+        if form.is_valid():
+            form.save()
+            return redirect('semester_list')
+    else:
+        form = forms.SemesterForm(instance=semester)
+    return render(request, 'schedule_editor/semester_form.html', {'form': form, 'semester': semester})
+
+
 def week(request, year, month, day, group_id=None):
     year, month, day = int(year), int(month), int(day)
     request.session['year'] = year

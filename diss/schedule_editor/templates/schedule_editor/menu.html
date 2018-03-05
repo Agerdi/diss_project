@@ -25,6 +25,9 @@
                         <li class="nav-item{% if request.resolver_match.url_name == 'student_group_list' %} active{% endif %}">
                             <a class="nav-link" href="{% url 'student_group_list' %}">Учебные группы</a>
                         </li>
+                        <li class="nav-item{% if request.resolver_match.url_name == 'semester_list' %} active{% endif %}">
+                            <a class="nav-link" href="{% url 'semester_list' %}">График учебного процесса</a>
+                        </li>
                     </ul>
                 </div>
             </nav>

@@ -21,5 +21,9 @@ urlpatterns = [
     path('student_group/create/', views.student_group_update_page, name='student_group_create'),
     path('student_group/update/<int:student_group_id>/', views.student_group_update_page, name='student_group_update'),
 
+    path('semester/list/', views.semester_list_page, name='semester_list'),
+    path('semester/create/', views.semester_update_page, name='semester_create'),
+    path('semester/update/<int:semester_id>/', views.semester_update_page, name='semester_update'),
+
     re_path(r'^w/(?P<year>[0-9]{4})-(?P<month>[0-9]{1,2})-(?P<day>[0-9]{1,2})/$', views.week, name='week'),
 ]

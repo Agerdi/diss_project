@@ -82,3 +82,35 @@ class Event(models.Model):
     class Meta:
         verbose_name = 'событие'
         verbose_name_plural = 'события'
+
+
+class Semester(models.Model):
+    """ График учебного процесса """
+    AUTUMN = 'AUT'
+    SPRING = 'SPR'
+
+    SEMESTER = (
+        (AUTUMN, 'осенний'),
+        (SPRING, 'весенний')
+    )
+
+    student_group = models.ForeignKey('StudentGroup', on_delete=models.DO_NOTHING, verbose_name='учебная группа')
+    year = models.IntegerField('календарный год')
+    semester = models.CharField('семестр', max_length=3, choices=SEMESTER)
+    begin_study = models.DateField('начало теоретического обучения')
+    end_study = models.DateField('конец теоретического обучения')
+    begin_exams = models.DateField('начало экзаменационной сессии')
+    end_exams = models.DateField('конец экзаменационной сессии')
+
+    class Meta:
+        verbose_name = 'семестр'
+        verbose_name_plural = 'график учебного процесса'
+
+    def __str__(self):
+        if self.semester == Semester.AUTUMN:
+            begin = self.year
+            end = self.year + 1
+        else:
+            begin = self.year - 1
+            end = self.year
+        return '%s: %d-%d учебный год, %s семестр' % (self.student_group.name, begin, end, self.get_semester_display())

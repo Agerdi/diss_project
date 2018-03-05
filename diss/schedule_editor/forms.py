@@ -29,3 +29,10 @@ class StudentGroupForm(forms.ModelForm):
     class Meta:
         fields = ['name', 'year']
         model = models.StudentGroup
+
+
+class SemesterForm(forms.ModelForm):
+    """ Форма редактирования семестра """
+    class Meta:
+        fields = ['student_group', 'year', 'semester', 'begin_study', 'end_study', 'begin_exams', 'end_exams']
+        model = models.Semester
