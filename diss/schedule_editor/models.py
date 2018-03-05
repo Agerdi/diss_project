@@ -1,9 +1,25 @@
 from django.db import models
 
+AUTUMN = 'AUT'
+SPRING = 'SPR'
 
-class Discipline(models.Model):
+SEMESTER = (
+    (AUTUMN, 'осенний'),
+    (SPRING, 'весенний')
+)
+
+
+class Subject(models.Model):
     name = models.CharField('наименование', max_length=100)
-    student_group = models.ForeignKey('StudentGroup', on_delete=models.CASCADE)
+    student_group = models.ForeignKey('StudentGroup', on_delete=models.CASCADE, verbose_name='учебная группа')
+    year = models.IntegerField('календарный год')
+    semester = models.CharField('семестр', max_length=3, choices=SEMESTER)
+    lecture_hours = models.IntegerField('часы лекций', blank=True, default=0)
+    lab_work_hours = models.IntegerField('часы лабораторных работ', blank=True, default=0)
+    practice_hours = models.IntegerField('часы практических работ', blank=True, default=0)
+    student_work_hours = models.IntegerField('часы СРС', blank=True, default=0)
+    control_hours = models.IntegerField('часы КСР', blank=True, default=0)
+    total_hours = models.IntegerField('часов всего', blank=True, default=0)
 
     class Meta:
         verbose_name = 'дисциплина'
@@ -30,7 +46,7 @@ class StudentGroup(models.Model):
 class Student(models.Model):
     fullname = models.CharField('полное имя', max_length=50)
     student_group = models.ForeignKey('StudentGroup', on_delete=models.CASCADE)
-    disciplines = models.ManyToManyField('Discipline', verbose_name='дисциплины')
+    disciplines = models.ManyToManyField('Subject', verbose_name='дисциплины')
 
     class Meta:
         verbose_name = 'студент'
@@ -69,7 +85,7 @@ class Teacher(models.Model):
 
 class Event(models.Model):
     """ События """
-    discipline = models.ForeignKey('Discipline', on_delete=models.CASCADE, blank=True, null=True,
+    discipline = models.ForeignKey('Subject', on_delete=models.CASCADE, blank=True, null=True,
                                    verbose_name='дисциплина')
     room = models.ForeignKey('Room', on_delete=models.CASCADE, verbose_name='аудитория')
     teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE, blank=True, null=True,
@@ -86,14 +102,6 @@ class Event(models.Model):
 
 class Semester(models.Model):
     """ График учебного процесса """
-    AUTUMN = 'AUT'
-    SPRING = 'SPR'
-
-    SEMESTER = (
-        (AUTUMN, 'осенний'),
-        (SPRING, 'весенний')
-    )
-
     student_group = models.ForeignKey('StudentGroup', on_delete=models.DO_NOTHING, verbose_name='учебная группа')
     year = models.IntegerField('календарный год')
     semester = models.CharField('семестр', max_length=3, choices=SEMESTER)
@@ -107,7 +115,7 @@ class Semester(models.Model):
         verbose_name_plural = 'график учебного процесса'
 
     def __str__(self):
-        if self.semester == Semester.AUTUMN:
+        if self.semester == AUTUMN:
             begin = self.year
             end = self.year + 1
         else:

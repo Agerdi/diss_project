@@ -13,16 +13,16 @@ def index(request):
 def subject_list_page(request):
     """ Страница списка дисциплин """
     if request.method == 'POST':
-        subject = get_object_or_404(models.Discipline, pk=request.POST.get('subject'))
+        subject = get_object_or_404(models.Subject, pk=request.POST.get('subject'))
         subject.delete()
     return render(request, "schedule_editor/subject_list.html", {
-        'subject_list': models.Discipline.objects.all()
+        'subject_list': models.Subject.objects.all()
     })
 
 
 def subject_update_page(request, subject_id=None):
     """ Страница создания / редактирования дисциплины """
-    subject = None if subject_id is None else get_object_or_404(models.Discipline, pk=subject_id)
+    subject = None if subject_id is None else get_object_or_404(models.Subject, pk=subject_id)
     if request.method == 'POST':
         form = forms.SubjectForm(request.POST, instance=subject)
         if form.is_valid():

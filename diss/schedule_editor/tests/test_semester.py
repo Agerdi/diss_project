@@ -18,7 +18,7 @@ class TestSemester(TestCase):
         self.semester = models.Semester()
         self.semester.student_group = self.group
         self.semester.year = 2017
-        self.semester.semester = models.Semester.AUTUMN
+        self.semester.semester = models.AUTUMN
         self.semester.begin_study = datetime(2017, 10, 13)
         self.semester.end_study = datetime(2018, 1, 18)
         self.semester.begin_exams = datetime(2018, 1, 19)
@@ -47,7 +47,7 @@ class TestSemester(TestCase):
         response = client.post('/semester/update/%d/' % self.semester.id, {
             'student_group': self.group.id,
             'year': 2018,
-            'semester': models.Semester.SPRING,
+            'semester': models.SPRING,
             'begin_study': '09.02.2018',
             'end_study': '28.04.2018',
             'begin_exams': '29.04.2018',
@@ -70,7 +70,7 @@ class TestSemester(TestCase):
         response = client.post('/semester/create/', {
             'student_group': self.group.id,
             'year': 2018,
-            'semester': models.Semester.SPRING,
+            'semester': models.SPRING,
             'begin_study': '09.02.2018',
             'end_study': '28.04.2018',
             'begin_exams': '29.04.2018',

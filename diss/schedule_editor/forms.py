@@ -6,8 +6,12 @@ from schedule_editor import models
 class SubjectForm(forms.ModelForm):
     """ Форма редактирования задачи """
     class Meta:
-        exclude = ['author', 'last_modified']
-        model = models.Discipline
+        fields = [
+            'name', 'student_group', 'year', 'semester',
+            'lecture_hours', 'lab_work_hours', 'practice_hours',
+            'student_work_hours', 'control_hours', 'total_hours'
+        ]
+        model = models.Subject
 
 
 class TeacherForm(forms.ModelForm):
