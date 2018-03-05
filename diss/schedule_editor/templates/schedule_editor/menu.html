@@ -5,7 +5,8 @@
         <div class="col">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <a class="navbar-brand" href="{% url 'index' %}">Расписание занятий</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -17,16 +18,23 @@
                             <a class="nav-link" href="{% url 'subject_list' %}">Дисциплины</a>
                         </li>
                         <li class="nav-item{% if request.resolver_match.url_name == 'teacher_list' %} active{% endif %}">
-                            <a class="nav-link" href="{% url 'teacher_list' %}">Преподаватели</a>
                         </li>
                         <li class="nav-item{% if request.resolver_match.url_name == 'room_list' %} active{% endif %}">
-                            <a class="nav-link" href="{% url 'room_list' %}">Аудитории</a>
                         </li>
                         <li class="nav-item{% if request.resolver_match.url_name == 'student_group_list' %} active{% endif %}">
-                            <a class="nav-link" href="{% url 'student_group_list' %}">Учебные группы</a>
                         </li>
                         <li class="nav-item{% if request.resolver_match.url_name == 'semester_list' %} active{% endif %}">
                             <a class="nav-link" href="{% url 'semester_list' %}">График учебного процесса</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                                Справочники
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="nav-link" href="{% url 'teacher_list' %}">Преподаватели</a>
+                                <a class="nav-link" href="{% url 'room_list' %}">Аудитории</a>
+                                <a class="nav-link" href="{% url 'student_group_list' %}">Учебные группы</a>
+                            </div>
                         </li>
                     </ul>
                 </div>
