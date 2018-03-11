@@ -18,7 +18,7 @@ class TestTeacher(TestCase):
         client = Client()
         response = client.get('/teacher/list/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Список преподавателей')
+        self.assertContains(response, 'Преподаватели')
         self.assertContains(response, 'Иванов Иван Иванович')
 
     def test_teacher_edit_page(self):
@@ -39,7 +39,7 @@ class TestTeacher(TestCase):
 
         response = client.get('/teacher/list/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Список преподавателей')
+        self.assertContains(response, 'Преподаватели')
         self.assertNotContains(response, 'Иванов Иван Иванович')
         self.assertContains(response, 'Петров Петр Петрович')
 
@@ -58,6 +58,6 @@ class TestTeacher(TestCase):
 
         response = client.get('/teacher/list/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Список преподавателей')
+        self.assertContains(response, 'Преподаватели')
         self.assertContains(response, 'Иванов Иван Иванович')
         self.assertContains(response, 'Петров Петр Петрович')
