@@ -17,7 +17,7 @@ class TestRoom(TestCase):
         client = Client()
         response = client.get('/room/list/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Список аудиторий')
+        self.assertContains(response, 'Аудитории')
         self.assertContains(response, 'КФЕН, ауд. 461')
 
     def test_room_edit_page(self):
@@ -36,7 +36,7 @@ class TestRoom(TestCase):
 
         response = client.get('/room/list/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Список аудиторий')
+        self.assertContains(response, 'Аудитории')
         self.assertNotContains(response, 'КФЕН, ауд. 461')
         self.assertContains(response, 'КФЕН, ауд. 437')
 
@@ -54,6 +54,6 @@ class TestRoom(TestCase):
 
         response = client.get('/room/list/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Список аудиторий')
+        self.assertContains(response, 'Аудитории')
         self.assertContains(response, 'КФЕН, ауд. 461')
         self.assertContains(response, 'КФЕН, ауд. 437')

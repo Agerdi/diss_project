@@ -55,7 +55,7 @@ class TestSubject(TestCase):
         self.assertContains(response, 'Математический анализ')
         self.assertContains(response, 'М-ФИИТ-16')
         self.assertContains(response, '2018')
-        self.assertContains(response, 'весенний')
+        self.assertContains(response, 'весна')
 
         response = client.post('/subject/update/%d/' % self.subject.id, {
             'name': 'Дифференциальные уравнения',

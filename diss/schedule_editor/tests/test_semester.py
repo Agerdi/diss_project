@@ -30,7 +30,9 @@ class TestSemester(TestCase):
         response = client.get('/semester/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'График учебного процесса')
-        self.assertContains(response, 'М-ФИИТ-16: 2017-2018 учебный год, осенний семестр')
+        self.assertContains(response, 'М-ФИИТ-16')
+        self.assertContains(response, '2017-2018')
+        self.assertContains(response, 'осень')
 
     def test_semester_edit_page(self):
         client = Client()
@@ -38,7 +40,7 @@ class TestSemester(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Редактирование семестра')
         self.assertContains(response, 'М-ФИИТ-16')
-        self.assertContains(response, 'осенний')
+        self.assertContains(response, 'осень')
         self.assertContains(response, '13.10.2017')
         self.assertContains(response, '18.01.2018')
         self.assertContains(response, '19.01.2018')
@@ -58,8 +60,10 @@ class TestSemester(TestCase):
         response = client.get('/semester/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'График учебного процесса')
-        self.assertNotContains(response, 'М-ФИИТ-16: 2017-2018 учебный год, осенний семестр')
-        self.assertContains(response, 'М-ФИИТ-16: 2017-2018 учебный год, весенний семестр')
+        self.assertContains(response, 'М-ФИИТ-16')
+        self.assertContains(response, '2017-2018')
+        self.assertContains(response, 'весна')
+        self.assertNotContains(response, 'осень')
 
     def test_semester_create_page(self):
         client = Client()
@@ -81,5 +85,7 @@ class TestSemester(TestCase):
         response = client.get('/semester/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'График учебного процесса')
-        self.assertContains(response, 'М-ФИИТ-16: 2017-2018 учебный год, осенний семестр')
-        self.assertContains(response, 'М-ФИИТ-16: 2017-2018 учебный год, весенний семестр')
+        self.assertContains(response, 'М-ФИИТ-16')
+        self.assertContains(response, '2017-2018')
+        self.assertContains(response, 'весна')
+        self.assertContains(response, 'осень')

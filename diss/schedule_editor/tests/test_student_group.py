@@ -17,7 +17,7 @@ class TestStudentGroup(TestCase):
         client = Client()
         response = client.get('/student_group/list/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Список учебных групп')
+        self.assertContains(response, 'Учебные группы')
         self.assertContains(response, 'М-ФИИТ-16')
 
     def test_student_group_edit_page(self):
@@ -30,15 +30,19 @@ class TestStudentGroup(TestCase):
 
         response = client.post('/student_group/update/%d/' % self.student_group.id, {
             'name': 'М-ИВТ-17',
-            'year': 2017
+            'year': 2017,
+            'qualification': models.StudentGroup.MAGISTER,
+            'form': models.StudentGroup.FULL_TIME
         })
         self.assertEqual(response.status_code, 302)
 
         response = client.get('/student_group/list/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Список учебных групп')
+        self.assertContains(response, 'Учебные группы')
         self.assertNotContains(response, 'М-ФИИТ-16')
         self.assertContains(response, 'М-ИВТ-17')
+        self.assertContains(response, 'магистратура')
+        self.assertContains(response, 'очная')
 
     def test_student_group_create_page(self):
         client = Client()
@@ -48,12 +52,16 @@ class TestStudentGroup(TestCase):
 
         response = client.post('/student_group/create/', {
             'name': 'М-ИВТ-17',
-            'year': 2017
+            'year': 2017,
+            'qualification': models.StudentGroup.MAGISTER,
+            'form': models.StudentGroup.FULL_TIME
         })
         self.assertEqual(response.status_code, 302)
 
         response = client.get('/student_group/list/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Список учебных групп')
+        self.assertContains(response, 'Учебные группы')
         self.assertContains(response, 'М-ФИИТ-16')
         self.assertContains(response, 'М-ИВТ-17')
+        self.assertContains(response, 'магистратура')
+        self.assertContains(response, 'очная')
