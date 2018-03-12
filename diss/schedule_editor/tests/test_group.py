@@ -13,22 +13,22 @@ class TestStudentGroup(TestCase):
         self.student_group.year = 2016
         self.student_group.save()
 
-    def test_student_group_list_page(self):
+    def test_group_list_page(self):
         client = Client()
-        response = client.get('/student_group/list/')
+        response = client.get('/group/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Учебные группы')
         self.assertContains(response, 'М-ФИИТ-16')
 
-    def test_student_group_edit_page(self):
+    def test_group_edit_page(self):
         client = Client()
-        response = client.get('/student_group/update/%d/' % self.student_group.id)
+        response = client.get('/group/update/%d/' % self.student_group.id)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Редактирование учебной группы')
         self.assertContains(response, 'М-ФИИТ-16')
         self.assertContains(response, '2016')
 
-        response = client.post('/student_group/update/%d/' % self.student_group.id, {
+        response = client.post('/group/update/%d/' % self.student_group.id, {
             'name': 'М-ИВТ-17',
             'year': 2017,
             'qualification': models.StudentGroup.MAGISTER,
@@ -36,7 +36,7 @@ class TestStudentGroup(TestCase):
         })
         self.assertEqual(response.status_code, 302)
 
-        response = client.get('/student_group/list/')
+        response = client.get('/group/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Учебные группы')
         self.assertNotContains(response, 'М-ФИИТ-16')
@@ -44,13 +44,13 @@ class TestStudentGroup(TestCase):
         self.assertContains(response, 'магистратура')
         self.assertContains(response, 'очная')
 
-    def test_student_group_create_page(self):
+    def test_group_create_page(self):
         client = Client()
-        response = client.get('/student_group/create/')
+        response = client.get('/group/create/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Редактирование учебной группы')
 
-        response = client.post('/student_group/create/', {
+        response = client.post('/group/create/', {
             'name': 'М-ИВТ-17',
             'year': 2017,
             'qualification': models.StudentGroup.MAGISTER,
@@ -58,7 +58,7 @@ class TestStudentGroup(TestCase):
         })
         self.assertEqual(response.status_code, 302)
 
-        response = client.get('/student_group/list/')
+        response = client.get('/group/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Учебные группы')
         self.assertContains(response, 'М-ФИИТ-16')

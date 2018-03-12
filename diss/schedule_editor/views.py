@@ -10,6 +10,21 @@ def index(request):
     return render(request, "schedule_editor/menu.html", {})
 
 
+def subject_group_page(request):
+    """ Страница графика учебного процесса """
+    group_list = [{
+        'qualification': g.get_qualification_display(),
+        'course': g.get_course(),
+        'group': g
+    } for g in models.StudentGroup.objects.all()]
+    group_list = list(filter(lambda g: g['course'] != 'обучение не начато', group_list))
+    group_list = list(filter(lambda g: g['course'] != 'обучение завершено', group_list))
+    group_list.sort(key=lambda g: (g['qualification'], g['course']))
+    return render(request, "schedule_editor/subject_group.html", {
+        'group_list': group_list
+    })
+
+
 def subject_list_page(request):
     """ Страница списка дисциплин """
     if request.method == 'POST':
@@ -79,27 +94,27 @@ def room_update_page(request, room_id=None):
     return render(request, 'schedule_editor/room_form.html', {'form': form, 'room': room})
 
 
-def student_group_list_page(request):
+def group_list_page(request):
     """ Страница списка учебных групп """
     if request.method == 'POST':
         student_group = get_object_or_404(models.StudentGroup, pk=request.POST.get('student_group'))
         student_group.delete()
-    return render(request, "schedule_editor/student_group_list.html", {
+    return render(request, "schedule_editor/group_list.html", {
         'student_group_list': models.StudentGroup.objects.all()
     })
 
 
-def student_group_update_page(request, student_group_id=None):
+def group_update_page(request, group_id=None):
     """ Страница создания / редактирования учебных групп """
-    student_group = None if student_group_id is None else get_object_or_404(models.StudentGroup, pk=student_group_id)
+    student_group = None if group_id is None else get_object_or_404(models.StudentGroup, pk=group_id)
     if request.method == 'POST':
         form = forms.StudentGroupForm(request.POST, instance=student_group)
         if form.is_valid():
             form.save()
-            return redirect('student_group_list')
+            return redirect('group_list')
     else:
         form = forms.StudentGroupForm(instance=student_group)
-    return render(request, 'schedule_editor/student_group_form.html', {'form': form, 'student_group': student_group})
+    return render(request, 'schedule_editor/group_form.html', {'form': form, 'student_group': student_group})
 
 
 def semester_list_page(request):

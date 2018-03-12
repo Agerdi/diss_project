@@ -17,7 +17,7 @@
                 <tbody>
                 {% for semester in semester_list %}
                 <tr>
-                    <td><a href="{% url 'student_group_update' semester.student_group.id %}">{{ semester.student_group }}</a></td>
+                    <td>{{ semester.student_group }}</td>
                     <td><a href="{% url 'semester_update' semester.id %}">{{ semester.get_semester }}</a></td>
                     <td>{{ semester.get_study_period }}</td>
                     <td>{{ semester.get_exams_period }}</td>

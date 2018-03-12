@@ -1,20 +1,29 @@
 {% extends 'schedule_editor/menu.html' %}
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h1>Аудитории</h1>
-                {% if room_list %}
-                    <ul>
-                        {% for room in room_list %}
-                            <li><a href="{% url 'room_update' room.id %}">{{ room }}</a></li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Данные об аудиториях еще не введены.</p>
-                {% endif %}
-                <a href="{% url 'room_create' %}" class="btn btn-primary">Добавить</a>
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Аудитории</h1>
+            {% if room_list %}
+            <table class="table table-hover">
+                <tbody>
+                <tr>
+                    <th>Аудитория</th>
+                </tr>
+                </tbody>
+                <tbody>
+                {% for room in room_list %}
+                <tr>
+                    <td><a href="{% url 'room_update' room.id %}">{{ room }}</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>Данные об аудиториях еще не введены.</p>
+            {% endif %}
+            <a href="{% url 'room_create' %}" class="btn btn-primary">Добавить</a>
         </div>
     </div>
+</div>
 {% endblock %}

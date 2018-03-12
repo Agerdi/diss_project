@@ -56,7 +56,7 @@
                             Удалить
                         </button>
                     {% endif %}
-                    <a href="{% url 'student_group_list' %}" class="btn btn-secondary">Отмена</a>
+                    <a href="{% url 'group_list' %}" class="btn btn-secondary">Отмена</a>
                 </form>
             </div>
         </div>
@@ -75,7 +75,7 @@
                         Вы действительно хотите удалить учебную группу?
                     </div>
                     <div class="modal-footer">
-                        <form action="{% url 'student_group_list' %}" method="post">
+                        <form action="{% url 'group_list' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="student_group" value="{{ form.instance.id }}">
                             <input type="submit" class="btn btn-danger" value="Удалить">

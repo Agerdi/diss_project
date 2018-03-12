@@ -116,25 +116,25 @@ class StudentGroup(Model):
         """ Длительность обучения в семестрах """
         answer = 0
         if self.form == StudentGroup.FULL_TIME:
-            if self.SPECIALIST:
+            if self.qualification == StudentGroup.SPECIALIST:
                 answer = 10  # очный специалитет, 5 лет
-            elif self.BACHELOR:
+            elif self.qualification == StudentGroup.BACHELOR:
                 answer = 8  # очный бакалавриат, 4 года
-            elif self.MAGISTER:
+            elif self.qualification == StudentGroup.MAGISTER:
                 answer = 4  # очная магистратура, 2 года
         elif self.form == StudentGroup.DISTANCE:
-            if self.SPECIALIST:
+            if self.qualification == StudentGroup.SPECIALIST:
                 answer = 12  # заочный специалитет, 6 лет
-            elif self.BACHELOR:
+            elif self.qualification == StudentGroup.BACHELOR:
                 answer = 10  # заочный бакалавриат, 5 лет
-            elif self.MAGISTER:
+            elif self.qualification == StudentGroup.MAGISTER:
                 answer = 5  # заочная магистратура, 2,5 года
         return answer
 
     def get_semester(self, date):
         """ Номер курса """
-        half = 0 if date.month < 6 else 1
-        return (date.year * 2 + half) - (self.year * 2 - 1)
+        half = 0 if date.month < 7 else 1
+        return (date.year - self.year) * 2 + half
 
     def get_course(self, date=None):
         """ Номер курса """
@@ -143,9 +143,9 @@ class StudentGroup(Model):
         semester = self.get_semester(date)
         answer = '%d курс' % (semester // 2)
         if semester > self.get_education_duration():
-            answer = 'Обучение завершено'
+            answer = 'обучение завершено'
         elif semester < 0:
-            answer = 'Обучение не начато'
+            answer = 'обучение не начато'
         return answer
 
 
