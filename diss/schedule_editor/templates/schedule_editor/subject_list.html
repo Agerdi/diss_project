@@ -18,9 +18,41 @@
                 <div id="collapse-{{ s.semester.id }}" class="collapse show" data-parent="#accordion">
                     <div class="card-body">
                         <ul>
-                            {% for subj in s.subjects %}
-                            <li><a href="#">{{ subj }}</a></li>
-                            {% endfor %}
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Дисциплина</th>
+                                        <th>Лекции, часов</th>
+                                        <th>Практики, часов</th>
+                                        <th>Лабораторные, часов</th>
+                                        <th>Всего часов</th>                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for subj in s.subjects %}
+                                    <tr>
+                                        <td><a href="#">{{ subj }}</a></td>
+                                        <td>{{ subj.lecture_hours }}</td>
+                                        <td>{{ subj.lab_work_hours }}</td>
+                                        <td>{{ subj.practice_hours }}</td>                                       
+                                        <td>
+                                            <!-- <script>
+                                                function addit(){                                                    
+                                                    var lect_hours = subj.lecture_hours ;
+                                                    var lab_hours = subj.lecture_hours;
+                                                    var pract_hours = subj.lecture_hours;
+                                                    var sum_hours = lect_hours + lab_hours + pract_hours;
+                                                    document.getElementById('result').innerHTML = sum_hours;
+                                                }
+                                            </script>
+
+                                            <input type="text" oninput="addit()" />
+                                            <div id="result"></div> -->
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </ul>
                     </div>
                 </div>
