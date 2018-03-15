@@ -3,11 +3,17 @@ from django import forms
 from schedule_editor import models
 
 
+class LoginForm(forms.Form):
+    """ Форма входа в систему """
+    username = forms.CharField(max_length=150, label='Логин')
+    password = forms.CharField(widget=forms.PasswordInput(), label='Пароль')
+
+
 class SubjectForm(forms.ModelForm):
     """ Форма редактирования задачи """
     class Meta:
         fields = [
-            'name', 'student_group', 'year', 'semester',
+            'name', 'semester',
             'lecture_hours', 'lab_work_hours', 'practice_hours',
             'student_work_hours', 'control_hours', 'total_hours'
         ]
@@ -31,7 +37,7 @@ class RoomForm(forms.ModelForm):
 class StudentGroupForm(forms.ModelForm):
     """ Форма редактирования учебной группы """
     class Meta:
-        fields = ['name', 'year']
+        fields = ['name', 'year', 'form', 'qualification']
         model = models.StudentGroup
 
 

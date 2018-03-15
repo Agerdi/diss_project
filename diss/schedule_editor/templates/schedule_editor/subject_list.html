@@ -1,20 +1,37 @@
 {% extends 'schedule_editor/menu.html' %}
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h1>Список дисциплин</h1>
-                {% if subject_list %}
-                    <ul>
-                        {% for subject in subject_list %}
-                            <li><a href="{% url 'subject_update' subject.id %}">{{ subject }}</a></li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Данные о дисциплинах еще не введены.</p>
-                {% endif %}
-                <a href="{% url 'subject_create' %}" class="btn btn-primary">Добавить</a>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Список дисциплин группы {{ group.name }}</h1>
+            {% if semesters %}
+
+            {% for s in semesters %}
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-{{ s.semester.id }}">
+                            {{ s.semester.get_year_display }}, {{ s.semester.get_semester_display }}
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapse-{{ s.semester.id }}" class="collapse show" data-parent="#accordion">
+                    <div class="card-body">
+                        <ul>
+                            {% for subj in s.subjects %}
+                            <li><a href="#">{{ subj }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
             </div>
+            {% endfor %}
+
+            {% else %}
+            <p>Данные о дисциплинах еще не введены.</p>
+            {% endif %}
+            <a href="{% url 'subject_create' %}" class="btn btn-primary">Добавить</a>
         </div>
     </div>
+</div>
 {% endblock %}

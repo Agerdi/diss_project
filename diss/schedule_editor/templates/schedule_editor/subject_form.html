@@ -14,32 +14,16 @@
                 <form method="post">
                     {% csrf_token %}
 
-                    <div class="form-group{% if form.name.errors %} has-error{% endif %}">
-                        {{ form.name.label_tag }}
-                        {{ form.name }}
-                        {% for error in form.name.errors %}
-                            {{ error }}
-                        {% endfor %}
-                    </div>
-
                     <div class="form-row">
-                        <div class="form-group col{% if form.student_group.errors %} has-error{% endif %}">
-                            {{ form.student_group.label_tag }}
-                            {{ form.student_group }}
-                            {% for error in form.student_group.errors %}
+                        <div class="form-group col-8{% if form.name.errors %} has-error{% endif %}">
+                            {{ form.name.label_tag }}
+                            {{ form.name }}
+                            {% for error in form.name.errors %}
                                 {{ error }}
                             {% endfor %}
                         </div>
 
-                        <div class="form-group col{% if form.year.errors %} has-error{% endif %}">
-                            {{ form.year.label_tag }}
-                            {{ form.year }}
-                            {% for error in form.year.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-
-                        <div class="form-group col{% if form.semester.errors %} has-error{% endif %}">
+                        <div class="form-group col-4{% if form.semester.errors %} has-error{% endif %}">
                             {{ form.semester.label_tag }}
                             {{ form.semester }}
                             {% for error in form.semester.errors %}

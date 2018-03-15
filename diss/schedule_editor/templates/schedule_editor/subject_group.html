@@ -1,0 +1,33 @@
+{% extends 'schedule_editor/menu.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Выберите группу</h1>
+            {% for g in group_list %}
+
+            {% ifchanged g.course %}
+                {% if not forloop.first %}</ul>{% endif %}
+
+                {% ifchanged g.qualification %}
+                <h4>{{ g.qualification|capfirst }}</h4>
+                {% endifchanged %}
+
+                <h6>{{ g.course|capfirst }}</h6>
+
+                {% if not forloop.first %}<ul>{% endif %}
+            {% endifchanged %}
+
+            {% if forloop.first %}<ul>{% endif %}
+            <li>
+                <a href="{% url 'subject_list' g.group.id %}">{{ g.group }}</a>
+            </li>
+            {% if forloop.last %}</ul>{% endif %}
+
+            {% empty %}
+            <p>Данные о дисциплинах еще не введены.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
