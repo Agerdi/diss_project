@@ -16,7 +16,7 @@
                 {% for teacher in teacher_list %}
                 <tr>
                     <td><a href="{% url 'teacher_update' teacher.id %}">{{ teacher }}</a></td>
-                    <td>{{ teacher.user }}</td>
+                    <td>{% if teacher.user %}{{ teacher.user }}{% endif %}</td>
                 </tr>
                 {% endfor %}
                 </tbody>

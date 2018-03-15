@@ -1,20 +1,41 @@
 import datetime
-import pytz
-from uuid import UUID
 
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from  django.http import  HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-#from icalendar import Calendar, Event, vRecur
-from django.utils import timezone
-
 from schedule_editor import models, forms
+
+
+# from icalendar import Calendar, Event, vRecur
 
 
 def index(request):
     return render(request, "schedule_editor/menu.html", {})
 
 
+def login_page(request):
+    """ Страница входа в систему """
+    if request.method == 'POST':
+        form = forms.LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(**form.cleaned_data)
+            if user is None:
+                form.add_error(None, 'Неправильный логин или пароль')
+            else:
+                login(request, user)
+                return redirect('index')
+    else:
+        form = forms.LoginForm()
+    return render(request, 'schedule_editor/login.html', {'form': form})
+
+
+def logout_page(request):
+    logout(request)
+    return redirect('index')
+
+
+@login_required
 def subject_group_page(request):
     """ Страница графика учебного процесса """
     group_list = [{
@@ -30,6 +51,7 @@ def subject_group_page(request):
     })
 
 
+@login_required
 def subject_list_page(request, group_id):
     """ Страница списка дисциплин """
     group = get_object_or_404(models.StudentGroup, pk=group_id)
@@ -47,6 +69,7 @@ def subject_list_page(request, group_id):
     })
 
 
+@login_required
 def subject_update_page(request, subject_id=None):
     """ Страница создания / редактирования дисциплины """
     subject = None if subject_id is None else get_object_or_404(models.Subject, pk=subject_id)
@@ -60,6 +83,7 @@ def subject_update_page(request, subject_id=None):
     return render(request, 'schedule_editor/subject_form.html', {'form': form, 'subject': subject})
 
 
+@login_required
 def teacher_list_page(request):
     """ Страница списка преподавателей """
     if request.method == 'POST':
@@ -70,6 +94,7 @@ def teacher_list_page(request):
     })
 
 
+@login_required
 def teacher_update_page(request, teacher_id=None):
     """ Страница создания / редактирования преподавателя """
     teacher = None if teacher_id is None else get_object_or_404(models.Teacher, pk=teacher_id)
@@ -83,6 +108,7 @@ def teacher_update_page(request, teacher_id=None):
     return render(request, 'schedule_editor/teacher_form.html', {'form': form, 'teacher': teacher})
 
 
+@login_required
 def room_list_page(request):
     """ Страница списка дисциплин """
     if request.method == 'POST':
@@ -93,6 +119,7 @@ def room_list_page(request):
     })
 
 
+@login_required
 def room_update_page(request, room_id=None):
     """ Страница создания / редактирования дисциплины """
     room = None if room_id is None else get_object_or_404(models.Room, pk=room_id)
@@ -106,6 +133,7 @@ def room_update_page(request, room_id=None):
     return render(request, 'schedule_editor/room_form.html', {'form': form, 'room': room})
 
 
+@login_required
 def group_list_page(request):
     """ Страница списка учебных групп """
     if request.method == 'POST':
@@ -116,6 +144,7 @@ def group_list_page(request):
     })
 
 
+@login_required
 def group_update_page(request, group_id=None):
     """ Страница создания / редактирования учебных групп """
     student_group = None if group_id is None else get_object_or_404(models.StudentGroup, pk=group_id)
@@ -129,6 +158,7 @@ def group_update_page(request, group_id=None):
     return render(request, 'schedule_editor/group_form.html', {'form': form, 'student_group': student_group})
 
 
+@login_required
 def semester_list_page(request):
     """ Страница графика учебного процесса """
     if request.method == 'POST':
@@ -139,6 +169,7 @@ def semester_list_page(request):
     })
 
 
+@login_required
 def semester_update_page(request, semester_id=None):
     """ Страница создания / редактирования семестра """
     semester = None if semester_id is None else get_object_or_404(models.Semester, pk=semester_id)
@@ -152,6 +183,7 @@ def semester_update_page(request, semester_id=None):
     return render(request, 'schedule_editor/semester_form.html', {'form': form, 'semester': semester})
 
 
+@login_required
 def week(request, year, month, day, group_id=None):
     year, month, day = int(year), int(month), int(day)
     request.session['year'] = year
