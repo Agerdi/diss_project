@@ -1,0 +1,35 @@
+{% extends "schedule_editor/base.html" %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-6 offset-3">
+                <h1>{% block title %}Вход{% endblock %}</h1>
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                        {{ form.username }}
+                        {% for error in form.username.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+                        {{ form.password }}
+                        {% for error in form.password.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <input type="submit" name="sudmit" class="btn btn-primary" value="Войти">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

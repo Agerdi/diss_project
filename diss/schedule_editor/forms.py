@@ -3,6 +3,12 @@ from django import forms
 from schedule_editor import models
 
 
+class LoginForm(forms.Form):
+    """ Форма входа в систему """
+    username = forms.CharField(max_length=150, label='Логин')
+    password = forms.CharField(widget=forms.PasswordInput(), label='Пароль')
+
+
 class SubjectForm(forms.ModelForm):
     """ Форма редактирования задачи """
     class Meta:

@@ -29,6 +29,11 @@
                             </div>
                         </li>
                     </ul>
+                    <ul class="navbar-nav">
+                        {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Выход</a></li>
+                        {% endif %}
+                    </ul>
                 </div>
             </nav>
         </div>

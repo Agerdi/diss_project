@@ -11,4 +11,5 @@
 .ropeproject/
 db.sqlite3
 migrations/
+static/
 venv/
