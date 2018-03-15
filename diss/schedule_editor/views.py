@@ -1,7 +1,12 @@
 import datetime
+import pytz
+from uuid import UUID
 
 from django.contrib.auth.models import Group
+from  django.http import  HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+#from icalendar import Calendar, Event, vRecur
+from django.utils import timezone
 
 from schedule_editor import models, forms
 
@@ -145,3 +150,28 @@ def week(request, year, month, day, group_id=None):
         'group': None if group_id is None else Group.objects.get(pk=group_id),
         'groups': Group.objects.all(),
     })
+
+
+#------Экспорт в iCal---------
+# def test_page(request, event_id):
+#     timezone.activate(pytz.timezone(request.user.timezone))
+#     instance = get_object_or_404(models.Event, id=event_id)
+#
+#     event = Event()
+#     event.add =('Summary', instance.summary)
+#     event.add =('uid', UUID(int=5))
+#     event.add =('dtStart', instance.start)
+#     event.add =('dtEnd', instance.end)
+#     event.add =('dtStamp', instance.start)
+#     if instance.period is not None:
+#         event.add('rRule', vRecur(freq=instance.period, interval=instance.interval))
+#     event.add =('Location', instance.location)
+#     event.add =('Description', instance.description)
+#
+#     cal = Calendar()
+#     cal.add('Version','2.0')
+#     cal.add('ProdId','-//KIT IMI//Project Arcadia//')
+#     cal.add_component(event)
+#
+#     return HttpResponse(cal.to_ical(), content_type='plain/calendar')
+
