@@ -25,13 +25,20 @@ def subject_group_page(request):
     })
 
 
-def subject_list_page(request):
+def subject_list_page(request, group_id):
     """ Страница списка дисциплин """
+    group = get_object_or_404(models.StudentGroup, pk=group_id)
+    subjects = list(models.Subject.objects.filter(semester__student_group=group))
+    semesters = [{
+        'semester': s,
+        'subjects': list(filter(lambda subj: subj.semester == s, subjects))
+    } for s in models.Semester.objects.filter(student_group=group)]
     if request.method == 'POST':
         subject = get_object_or_404(models.Subject, pk=request.POST.get('subject'))
         subject.delete()
     return render(request, "schedule_editor/subject_list.html", {
-        'subject_list': models.Subject.objects.all()
+        'group': group,
+        'semesters': semesters
     })
 
 

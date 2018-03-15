@@ -20,7 +20,7 @@
 
             {% if forloop.first %}<ul>{% endif %}
             <li>
-                <a href="{% url 'group_update' g.group.id %}">{{ g.group }}</a>
+                <a href="{% url 'subject_list' g.group.id %}">{{ g.group }}</a>
             </li>
             {% if forloop.last %}</ul>{% endif %}
 
