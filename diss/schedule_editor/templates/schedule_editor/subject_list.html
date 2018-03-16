@@ -7,7 +7,7 @@
             {% if semesters %}
 
             {% for s in semesters %}
-            <div class="card">
+            <div class="card my-2">
                 <div class="card-header" id="headingOne">
                     <h5 class="mb-0">
                         <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-{{ s.semester.id }}">
@@ -54,7 +54,7 @@
             {% else %}
             <p>Данные о дисциплинах еще не введены.</p>
             {% endif %}
-            <a href="{% url 'subject_create' %}" class="btn btn-primary">Добавить</a>
+            <a href="{% url 'subject_create' group.id %}" class="btn btn-primary">Добавить</a>
         </div>
     </div>
 </div>

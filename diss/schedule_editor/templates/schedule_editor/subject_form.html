@@ -1,123 +1,155 @@
 {% extends 'schedule_editor/menu.html' %}
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h1>Редактирование дисциплины</h1>
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger" role="alert">
-                            {% for error in form.non_field_errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                <form method="post">
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Редактирование дисциплины</h1>
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-row">
+                    <div class="form-group col-8{% if form.name.errors %} has-error{% endif %}">
+                        {{ form.name.label_tag }}
+                        {{ form.name }}
+                        {% for error in form.name.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group col-4{% if form.semester.errors %} has-error{% endif %}">
+                        {{ form.semester.label_tag }}
+                        {{ form.semester }}
+                        {% for error in form.semester.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col{% if form.lecture_hours.errors %} has-error{% endif %}">
+                        {{ form.lecture_hours.label_tag }}
+                        {{ form.lecture_hours }}
+                        {% for error in form.lecture_hours.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group col{% if form.lab_work_hours.errors %} has-error{% endif %}">
+                        {{ form.lab_work_hours.label_tag }}
+                        {{ form.lab_work_hours }}
+                        {% for error in form.lab_work_hours.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group col{% if form.practice_hours.errors %} has-error{% endif %}">
+                        {{ form.practice_hours.label_tag }}
+                        {{ form.practice_hours }}
+                        {% for error in form.practice_hours.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col{% if form.student_work_hours.errors %} has-error{% endif %}">
+                        {{ form.student_work_hours.label_tag }}
+                        {{ form.student_work_hours }}
+                        {% for error in form.student_work_hours.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group col{% if form.control_hours.errors %} has-error{% endif %}">
+                        {{ form.control_hours.label_tag }}
+                        {{ form.control_hours }}
+                        {% for error in form.control_hours.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group col{% if form.total_hours.errors %} has-error{% endif %}">
+                        {{ form.total_hours.label_tag }}
+                        {{ form.total_hours }}
+                        {% for error in form.total_hours.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <h5>Занятия</h5>
+                {{ subject_class }}
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Преподаватель</th>
+                        <th>Тип</th>
+                        <th>День недели</th>
+                        <th>Номер пары</th>
+                        <th>Периодичность</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for c in subject.subjectclass_set.all %}
+                    <tr>
+                        <td>{{ c.teacher }}</td>
+                        <td>{{ c.get_class_type_display }}</td>
+                        <td>{{ c.get_weekday_display }}</td>
+                        <td>{{ c.number }}</td>
+                        <td>{{ c.get_period_display }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <input type="submit" class="btn btn-primary" value="Сохранить">
+                {% if form.instance.id %}
+                <button type="button" role="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmRemove">
+                    Удалить
+                </button>
+                <a type="button" role="button" class="btn btn-info" href="#">
+                    Добавить занятие
+                </a>
+                {% endif %}
+                {% if group %}
+                <a href="{% url 'subject_list' group.id %}" class="btn btn-secondary">Отмена</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% if form.instance.id %}
+<div class="modal fade" id="confirmRemove" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Подтвердите удаление</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Вы действительно хотите удалить дисциплину?
+            </div>
+            <div class="modal-footer">
+                {% if group %}
+                <form action="{% url 'subject_list' group.id %}" method="post">
                     {% csrf_token %}
-
-                    <div class="form-row">
-                        <div class="form-group col-8{% if form.name.errors %} has-error{% endif %}">
-                            {{ form.name.label_tag }}
-                            {{ form.name }}
-                            {% for error in form.name.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-
-                        <div class="form-group col-4{% if form.semester.errors %} has-error{% endif %}">
-                            {{ form.semester.label_tag }}
-                            {{ form.semester }}
-                            {% for error in form.semester.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col{% if form.lecture_hours.errors %} has-error{% endif %}">
-                            {{ form.lecture_hours.label_tag }}
-                            {{ form.lecture_hours }}
-                            {% for error in form.lecture_hours.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-
-                        <div class="form-group col{% if form.lab_work_hours.errors %} has-error{% endif %}">
-                            {{ form.lab_work_hours.label_tag }}
-                            {{ form.lab_work_hours }}
-                            {% for error in form.lab_work_hours.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-
-                        <div class="form-group col{% if form.practice_hours.errors %} has-error{% endif %}">
-                            {{ form.practice_hours.label_tag }}
-                            {{ form.practice_hours }}
-                            {% for error in form.practice_hours.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col{% if form.student_work_hours.errors %} has-error{% endif %}">
-                            {{ form.student_work_hours.label_tag }}
-                            {{ form.student_work_hours }}
-                            {% for error in form.student_work_hours.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-
-                        <div class="form-group col{% if form.control_hours.errors %} has-error{% endif %}">
-                            {{ form.control_hours.label_tag }}
-                            {{ form.control_hours }}
-                            {% for error in form.control_hours.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-
-                        <div class="form-group col{% if form.total_hours.errors %} has-error{% endif %}">
-                            {{ form.total_hours.label_tag }}
-                            {{ form.total_hours }}
-                            {% for error in form.total_hours.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <input type="submit" class="btn btn-primary" value="Сохранить">
-                        {% if form.instance.id %}
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmRemove">
-                                Удалить
-                            </button>
-                        {% endif %}
-                    <a href="{% url 'subject_list' %}" class="btn btn-secondary">Отмена</a>
+                    <input type="hidden" name="subject" value="{{ form.instance.id }}">
+                    <input type="submit" class="btn btn-danger" value="Удалить">
                 </form>
+                {% endif %}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
             </div>
         </div>
     </div>
-    {% if form.instance.id %}
-        <div class="modal fade" id="confirmRemove" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Подтвердите удаление</h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Вы действительно хотите удалить дисциплину?
-                    </div>
-                    <div class="modal-footer">
-                        <form action="{% url 'subject_list' %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="subject" value="{{ form.instance.id }}">
-                            <input type="submit" class="btn btn-danger" value="Удалить">
-                        </form>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
+</div>
+{% endif %}
 {% endblock %}
