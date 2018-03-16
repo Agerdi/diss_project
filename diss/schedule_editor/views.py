@@ -54,15 +54,15 @@ def subject_group_page(request):
 @login_required
 def subject_list_page(request, group_id):
     """ Страница списка дисциплин """
+    if request.method == 'POST':
+        subject = get_object_or_404(models.Subject, pk=request.POST.get('subject'))
+        subject.delete()
     group = get_object_or_404(models.StudentGroup, pk=group_id)
     subjects = list(models.Subject.objects.filter(semester__student_group=group))
     semesters = [{
         'semester': s,
         'subjects': list(filter(lambda subj: subj.semester == s, subjects))
     } for s in models.Semester.objects.filter(student_group=group)]
-    if request.method == 'POST':
-        subject = get_object_or_404(models.Subject, pk=request.POST.get('subject'))
-        subject.delete()
     return render(request, "schedule_editor/subject_list.html", {
         'group': group,
         'semesters': semesters
@@ -70,17 +70,19 @@ def subject_list_page(request, group_id):
 
 
 @login_required
-def subject_update_page(request, subject_id=None):
+def subject_update_page(request, group_id=None, subject_id=None):
     """ Страница создания / редактирования дисциплины """
     subject = None if subject_id is None else get_object_or_404(models.Subject, pk=subject_id)
+    group = None if group_id is None else get_object_or_404(models.StudentGroup, pk=group_id)
+    group = subject.semester.student_group if group is None else group
     if request.method == 'POST':
         form = forms.SubjectForm(request.POST, instance=subject)
         if form.is_valid():
             form.save()
-            return redirect('subject_list')
+            return redirect('subject_list', group_id=group.id)
     else:
         form = forms.SubjectForm(instance=subject)
-    return render(request, 'schedule_editor/subject_form.html', {'form': form, 'subject': subject})
+    return render(request, 'schedule_editor/subject_form.html', {'form': form, 'subject': subject, 'group': group})
 
 
 @login_required
