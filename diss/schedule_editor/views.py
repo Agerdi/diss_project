@@ -70,11 +70,10 @@ def subject_list_page(request, group_id):
 
 
 @login_required
-def subject_update_page(request, group_id=None, subject_id=None):
+def subject_update_page(request, group_id, subject_id=None):
     """ Страница создания / редактирования дисциплины """
+    group = get_object_or_404(models.StudentGroup, pk=group_id)
     subject = None if subject_id is None else get_object_or_404(models.Subject, pk=subject_id)
-    group = None if group_id is None else get_object_or_404(models.StudentGroup, pk=group_id)
-    group = subject.semester.student_group if group is None else group
     if request.method == 'POST':
         form = forms.SubjectForm(request.POST, instance=subject)
         if form.is_valid():
@@ -83,6 +82,31 @@ def subject_update_page(request, group_id=None, subject_id=None):
     else:
         form = forms.SubjectForm(instance=subject)
     return render(request, 'schedule_editor/subject_form.html', {'form': form, 'subject': subject, 'group': group})
+
+
+def subject_class_page(request, subject_id, class_id=None):
+    """ Редактирование занятия дисциплины """
+    subject = get_object_or_404(models.Subject, pk=subject_id)
+    group = subject.semester.student_group
+    subject_class = None if class_id is None else get_object_or_404(models.SubjectClass, pk=class_id)
+    if request.method == 'POST':
+        form = forms.SubjectClassForm(request.POST, instance=subject_class)
+        if form.is_valid():
+            form.save()
+            return redirect('subject_update', group_id=group.id, subject_id=subject.id)
+    else:
+        form = forms.SubjectClassForm(instance=subject_class)
+    return render(request, 'schedule_editor/subject_class.html', {'form': form, 'subject': subject, 'group': group})
+
+
+def subject_class_delete(request, subject_id, class_id):
+    """ Удаление занятия дисциплины """
+    subject_class = get_object_or_404(models.SubjectClass, pk=class_id)
+    subject_class.delete()
+    subject = get_object_or_404(models.Subject, pk=subject_id)
+    semester = subject.semester
+    student_group = semester.student_group
+    return redirect('subject_update', student_group.id, subject.id)
 
 
 @login_required
@@ -230,4 +254,3 @@ def week(request, year, month, day, group_id=None):
 #     cal.add_component(event)
 #
 #     return HttpResponse(cal.to_ical(), content_type='plain/calendar')
-
