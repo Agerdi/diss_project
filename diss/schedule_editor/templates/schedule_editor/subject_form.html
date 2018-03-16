@@ -84,11 +84,39 @@
                     </div>
                 </div>
 
+                <h5>Занятия</h5>
+                {{ subject_class }}
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Преподаватель</th>
+                        <th>Тип</th>
+                        <th>День недели</th>
+                        <th>Номер пары</th>
+                        <th>Периодичность</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for c in subject.subjectclass_set.all %}
+                    <tr>
+                        <td>{{ c.teacher }}</td>
+                        <td>{{ c.get_class_type_display }}</td>
+                        <td>{{ c.get_weekday_display }}</td>
+                        <td>{{ c.number }}</td>
+                        <td>{{ c.get_period_display }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
                 <input type="submit" class="btn btn-primary" value="Сохранить">
                 {% if form.instance.id %}
-                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmRemove">
+                <button type="button" role="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmRemove">
                     Удалить
                 </button>
+                <a type="button" role="button" class="btn btn-info" href="#">
+                    Добавить занятие
+                </a>
                 {% endif %}
                 {% if group %}
                 <a href="{% url 'subject_list' group.id %}" class="btn btn-secondary">Отмена</a>
