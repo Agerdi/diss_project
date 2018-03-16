@@ -35,19 +35,13 @@
                                         <td>{{ subj.lecture_hours }}</td>
                                         <td>{{ subj.lab_work_hours }}</td>
                                         <td>{{ subj.practice_hours }}</td>                                       
-                                        <td>
-                                            <!-- <script>
-                                                function addit(){                                                    
-                                                    var lect_hours = subj.lecture_hours ;
-                                                    var lab_hours = subj.lecture_hours;
-                                                    var pract_hours = subj.lecture_hours;
+                                        <td>                                            
+                                            <!-- <script>                                                                                                    
+                                                    var lect_hours = {{subj.lecture_hours}};
+                                                    var lab_hours = {{subj.lab_work_hours}};
+                                                    var pract_hours = {{subj.practice_hours}};
                                                     var sum_hours = lect_hours + lab_hours + pract_hours;
-                                                    document.getElementById('result').innerHTML = sum_hours;
-                                                }
-                                            </script>
-
-                                            <input type="text" oninput="addit()" />
-                                            <div id="result"></div> -->
+                                            </script>       -->                                      
                                         </td>
                                     </tr>
                                     {% endfor %}
