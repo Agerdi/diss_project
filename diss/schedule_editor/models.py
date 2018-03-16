@@ -24,6 +24,9 @@ class Subject(Model):
     def __str__(self):
         return self.name
 
+    def get_total_hours(self):
+        return self.lecture_hours + self.lab_work_hours + self.practice_hours + self.student_work_hours + self.control_hours 
+
 
 class SubjectClass(Model):
     """ Занятие дисциплины """
