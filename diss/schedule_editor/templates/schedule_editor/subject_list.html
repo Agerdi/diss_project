@@ -30,18 +30,11 @@
                             <tbody>
                                 {% for subj in s.subjects %}
                                 <tr>
-                                    <td><a href="#">{{ subj }}</a></td>
+                                    <td><a href="{% url 'subject_update' subj.id %}">{{ subj }}</a></td>
                                     <td>{{ subj.lecture_hours }}</td>
                                     <td>{{ subj.lab_work_hours }}</td>
                                     <td>{{ subj.practice_hours }}</td>                                       
-                                    <td>{{ subj.get_total_hours }}
-                                        <!-- <script>                                                                                                    
-                                                var lect_hours = {{subj.lecture_hours}};
-                                                var lab_hours = {{subj.lab_work_hours}};
-                                                var pract_hours = {{subj.practice_hours}};
-                                                var sum_hours = lect_hours + lab_hours + pract_hours;
-                                        </script> -->
-                                    </td>
+                                    <td>{{ subj.get_total_hours }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
