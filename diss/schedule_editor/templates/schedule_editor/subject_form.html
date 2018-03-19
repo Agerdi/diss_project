@@ -89,21 +89,21 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th>Преподаватель</th>
                         <th>Тип</th>
                         <th>День недели</th>
                         <th>Номер пары</th>
                         <th>Периодичность</th>
+                        <th>Преподаватель</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for c in subject.subjectclass_set.all %}
                     <tr>
-                        <td>{{ c.teacher }}</td>
-                        <td>{{ c.get_class_type_display }}</td>
+                        <td><a href="{% url 'class_update' subject.id c.id %}">{{ c.get_class_type_display }}</a></td>
                         <td>{{ c.get_weekday_display }}</td>
                         <td>{{ c.number }}</td>
                         <td>{{ c.get_period_display }}</td>
+                        <td>{{ c.teacher }}</td>
                     </tr>
                     {% endfor %}
                     </tbody>
@@ -114,7 +114,7 @@
                 <button type="button" role="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmRemove">
                     Удалить
                 </button>
-                <a type="button" role="button" class="btn btn-info" href="#">
+                <a type="button" role="button" class="btn btn-info" href="{% url 'class_create' subject.id %}">
                     Добавить занятие
                 </a>
                 {% endif %}

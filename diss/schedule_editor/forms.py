@@ -20,6 +20,13 @@ class SubjectForm(forms.ModelForm):
         model = models.Subject
 
 
+class SubjectClassForm(forms.ModelForm):
+    """ Форма редактирования занятия дистанции """
+    class Meta:
+        fields = ['subject', 'class_type', 'weekday', 'number', 'period', 'teacher']
+        model = models.SubjectClass
+
+
 class TeacherForm(forms.ModelForm):
     """ Форма редактирования преподавателя """
     class Meta:

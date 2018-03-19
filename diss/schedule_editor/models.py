@@ -74,7 +74,7 @@ class SubjectClass(Model):
     teacher = ForeignKey('Teacher', on_delete=DO_NOTHING, blank=True, null=True, verbose_name='преподаватель')
     weekday = CharField('день недели', max_length=3, choices=WEEKDAY)
     period = CharField('период', max_length=3, choices=PERIOD)
-    number = IntegerField('номер занятие')
+    number = IntegerField('номер занятия')
 
     class Meta:
         verbose_name = 'занятие дисциплины'

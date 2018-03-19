@@ -1,0 +1,93 @@
+{% extends 'schedule_editor/menu.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Редактирование занятия</h1>
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+
+                <input type="hidden" name="subject" value="{{ subject.id }}">
+
+                <div class="form-row">
+                    <div class="form-group col-3{% if form.class_type.errors %} has-error{% endif %}">
+                        {{ form.class_type.label_tag }}
+                        {{ form.class_type }}
+                        {% for error in form.class_type.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group col-3{% if form.weekday.errors %} has-error{% endif %}">
+                        {{ form.weekday.label_tag }}
+                        {{ form.weekday }}
+                        {% for error in form.weekday.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group col-3{% if form.number.errors %} has-error{% endif %}">
+                        {{ form.number.label_tag }}
+                        {{ form.number }}
+                        {% for error in form.number.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group col-3{% if form.period.errors %} has-error{% endif %}">
+                        {{ form.period.label_tag }}
+                        {{ form.period }}
+                        {% for error in form.period.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group{% if form.lecture_hours.errors %} has-error{% endif %}">
+                    {{ form.teacher.label_tag }}
+                    {{ form.teacher }}
+                    {% for error in form.teacher.errors %}
+                    {{ error }}
+                    {% endfor %}
+                </div>
+
+                <input type="submit" class="btn btn-primary" value="Сохранить">
+                {% if form.instance.id %}
+                <button type="button" role="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmRemove">
+                    Удалить
+                </button>
+                {% endif %}
+                <a href="{% url 'subject_update' group.id subject.id %}" class="btn btn-secondary">Отмена</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% if form.instance.id %}
+<div class="modal fade" id="confirmRemove" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Подтвердите удаление</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Вы действительно хотите удалить занятие?
+            </div>
+            <div class="modal-footer">
+                <a role="button" class="btn btn-danger" href="{% url 'class_delete' subject.id form.instance.id %}">Удалить</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
