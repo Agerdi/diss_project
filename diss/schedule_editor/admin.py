@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from schedule_editor import models
+from . import models
 
 admin.site.register(models.Subject)
 admin.site.register(models.SubjectClass)

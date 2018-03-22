@@ -1,5 +1,5 @@
-from diss.settings import *
+from .settings import *
 
 ALLOWED_HOSTS = ['kit-imi.ddns.net']
 
-DEBUG = True
+DEBUG = False

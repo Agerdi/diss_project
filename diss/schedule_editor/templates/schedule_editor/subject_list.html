@@ -6,35 +6,35 @@
             <h1>Список дисциплин группы {{ group.name }}</h1>
             {% if semesters %}
 
-            {% for s in semesters %}
+            {% for sem in semesters %}
             <div class="card my-2">
                 <div class="card-header" id="headingOne">
                     <h5 class="mb-0">
-                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-{{ s.semester.id }}">
-                            {{ s.semester.get_year_display }}, {{ s.semester.get_semester_display }}
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-{{ sem.semester.id }}">
+                            {{ sem.semester.get_year_display }}, {{ sem.semester.get_semester_display }}
                         </button>
                     </h5>
                 </div>
-                <div id="collapse-{{ s.semester.id }}" class="collapse show" data-parent="#accordion">
+                <div id="collapse-{{ sem.semester.id }}" class="collapse show" data-parent="#accordion">
                     <div class="card-body p-0">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Дисциплина</th>
-                                    <th>Лекции, часов</th>
-                                    <th>Практики, часов</th>
-                                    <th>Лабораторные, часов</th>
-                                    <th>Всего часов</th>                                        
+                                    <th>Лекции, ак.ч.</th>
+                                    <th>Лабораторные, ак.ч.</th>
+                                    <th>Практики, ак.ч.</th>
+                                    <th>Всего ак.ч.</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for subj in s.subjects %}
+                                {% for subj in sem.subjects %}
                                 <tr>
-                                    <td><a href="{% url 'subject_update' group.id subj.id %}">{{ subj }}</a></td>
-                                    <td>{{ subj.lecture_hours }}</td>
-                                    <td>{{ subj.lab_work_hours }}</td>
-                                    <td>{{ subj.practice_hours }}</td>                                       
-                                    <td>{{ subj.get_total_hours }}</td>
+                                    <td><a href="{% url 'subject_update' group.id subj.subject.id %}">{{ subj.subject }}</a></td>
+                                    <td>{{ subj.lecture_hours }} / {{ subj.subject.lecture_hours }}</td>
+                                    <td>{{ subj.lab_work_hours }} / {{ subj.subject.lab_work_hours }}</td>
+                                    <td>{{ subj.practice_hours }} / {{ subj.subject.practice_hours }}</td>
+                                    <td>{{ subj.total_hours }} / {{ subj.subject.total_hours }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

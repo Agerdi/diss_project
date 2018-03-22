@@ -4,7 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.shortcuts import render, get_object_or_404, redirect
-from schedule_editor import models, forms
+
+from . import models, forms
 
 
 # from icalendar import Calendar, Event, vRecur
@@ -53,16 +54,45 @@ def subject_group_page(request):
 
 @login_required
 def subject_list_page(request, group_id):
-    """ Страница списка дисциплин """
+    """ Страница списка дисциплин учебной группы """
+
+    # При необходимости, удалим дисциплину
     if request.method == 'POST':
         subject = get_object_or_404(models.Subject, pk=request.POST.get('subject'))
         subject.delete()
+
+    # Найдем учебную группу
     group = get_object_or_404(models.StudentGroup, pk=group_id)
-    subjects = list(models.Subject.objects.filter(semester__student_group=group))
-    semesters = [{
-        'semester': s,
-        'subjects': list(filter(lambda subj: subj.semester == s, subjects))
-    } for s in models.Semester.objects.filter(student_group=group)]
+
+    # Получим семестры
+    semesters = [{'semester': sem} for sem in models.Semester.objects.filter(student_group=group)]
+
+    # Получим данные дисциплин
+    subjects = list(models.Subject.objects.select_related('semester').filter(semester__student_group=group))
+
+    # Получим данные занятий дисциплин
+    subject_classes = list(models.SubjectClass.objects.select_related('subject__semester')
+                           .filter(subject__semester__student_group=group))
+
+    for sem in semesters:
+        sem['subjects'] = [{'subject': sbj} for sbj in subjects if sbj.semester == sem['semester']]
+
+        for sbj in sem['subjects']:
+            sbj['lecture_hours'] = 0
+            sbj['lab_work_hours'] = 0
+            sbj['practice_hours'] = 0
+            sbj['total_hours'] = sbj['subject'].student_work_hours + sbj['subject'].control_hours
+            for sc in subject_classes:
+                if sc.subject == sbj['subject']:
+                    hours = sc.get_count() * 2
+                    if sc.class_type == models.SubjectClass.LECTURE:
+                        sbj['lecture_hours'] += hours
+                    if sc.class_type == models.SubjectClass.LAB_WORK:
+                        sbj['lab_work_hours'] += hours
+                    if sc.class_type == models.SubjectClass.PRACTICE:
+                        sbj['practice_hours'] += hours
+                    sbj['total_hours'] += hours
+
     return render(request, "schedule_editor/subject_list.html", {
         'group': group,
         'semesters': semesters

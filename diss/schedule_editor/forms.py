@@ -1,6 +1,6 @@
 from django import forms
 
-from schedule_editor import models
+from . import models
 
 
 class LoginForm(forms.Form):

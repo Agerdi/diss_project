@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.db.models import (CASCADE, CharField, DateField, DateTimeField, DO_NOTHING, ForeignKey, IntegerField, Model,
                               OneToOneField, TextField)
@@ -41,13 +41,13 @@ class SubjectClass(Model):
         (PRACTICE, 'практическое занятие')
     )
 
-    MONDAY = 'MON'
-    TUESDAY = 'TUE'
-    WEDNESDAY = 'WED'
-    THURSDAY = 'THU'
-    FRIDAY = 'FRI'
-    SATURDAY = 'SAT'
-    SUNDAY = 'SUN'
+    MONDAY = 0
+    TUESDAY = 1
+    WEDNESDAY = 2
+    THURSDAY = 3
+    FRIDAY = 4
+    SATURDAY = 5
+    SUNDAY = 6
 
     WEEKDAY = (
         (MONDAY, 'понедельник'),
@@ -59,9 +59,9 @@ class SubjectClass(Model):
         (SUNDAY, 'воскресенье'),
     )
 
-    EVERY_WEEK = 'EVR'
-    ODD_WEEK = 'ODD'
-    EVEN_WEEK = 'EVN'
+    EVERY_WEEK = -1
+    ODD_WEEK = 1
+    EVEN_WEEK = 0
 
     PERIOD = (
         (EVERY_WEEK, 'еженедельно'),
@@ -72,13 +72,42 @@ class SubjectClass(Model):
     subject = ForeignKey('Subject', on_delete=CASCADE)
     class_type = CharField('тип занятия', max_length=3, choices=CLASS_TYPES)
     teacher = ForeignKey('Teacher', on_delete=DO_NOTHING, blank=True, null=True, verbose_name='преподаватель')
-    weekday = CharField('день недели', max_length=3, choices=WEEKDAY)
-    period = CharField('период', max_length=3, choices=PERIOD)
+    weekday = IntegerField('день недели', choices=WEEKDAY)
+    period = IntegerField('период', choices=PERIOD)
     number = IntegerField('номер занятия')
 
     class Meta:
         verbose_name = 'занятие дисциплины'
         verbose_name_plural = 'занятия дисциплин'
+
+    def get_count(self):
+        """ Получить количество повторов """
+
+        semester = self.subject.semester
+        begin_study = semester.begin_study
+        end_study = semester.end_study
+
+        # День недели перед началом семестра
+        cur_day = begin_study - timedelta(days=begin_study.weekday()) + timedelta(days=self.weekday)
+        if cur_day >= begin_study:
+            cur_day -= timedelta(days=7)
+
+        # Если чётность недели не совпадает, тогда отнимем ещё неделю
+        if self.period != SubjectClass.EVERY_WEEK:
+            _, week_number, _ = cur_day.isocalendar()
+            if week_number % 2 != self.period:
+                cur_day -= timedelta(days=7)
+
+        # Периодичность занятий
+        delta = timedelta(days=(7 if self.period == SubjectClass.EVERY_WEEK else 14))
+
+        # Подсчёт количества занятий до конца семестра
+        count = -1
+        while cur_day < end_study:
+            cur_day += delta
+            count += 1
+
+        return count
 
 
 class StudentGroup(Model):
@@ -187,9 +216,10 @@ class Teacher(Model):
 class Event(Model):
     """ Событие """
 
-    discipline = ForeignKey('Subject', on_delete=CASCADE, blank=True, null=True, verbose_name='дисциплина')
-    room = ForeignKey('Room', on_delete=CASCADE, verbose_name='аудитория')
-    teacher = ForeignKey('Teacher', on_delete=CASCADE, blank=True, null=True, verbose_name='преподаватель')
+    subject_class = ForeignKey('SubjectClass', on_delete=CASCADE, blank=True, null=True,
+                               verbose_name='занятие дисциплины')
+    room = ForeignKey('Room', on_delete=DO_NOTHING, verbose_name='аудитория')
+    teacher = ForeignKey('Teacher', on_delete=DO_NOTHING, blank=True, null=True, verbose_name='преподаватель')
     begin = DateTimeField('начало')
     end = DateTimeField('окончание')
     event_type = CharField('тип события', max_length=30)
@@ -232,10 +262,12 @@ class Semester(Model):
         return '%s: %d-%d, %s' % (self.student_group.name, begin, end, self.get_semester_display())
 
     def get_study_period(self):
-        return '%s – %s­' % (self.begin_study.strftime('%Y.%m.%d'), self.end_study.strftime('%Y.%m.%d'))
+        """ Период обучения """
+        return '%s – %s' % (self.begin_study.strftime('%Y.%m.%d'), self.end_study.strftime('%Y.%m.%d'))
 
     def get_exams_period(self):
-        return '%s – %s­' % (self.begin_exams.strftime('%Y.%m.%d'), self.end_exams.strftime('%Y.%m.%d'))
+        """ Сессия """
+        return '%s – %s' % (self.begin_exams.strftime('%Y.%m.%d'), self.end_exams.strftime('%Y.%m.%d'))
 
     def get_semester(self):
         begin = self.year
