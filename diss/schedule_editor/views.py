@@ -105,12 +105,12 @@ def subject_update_page(request, group_id, subject_id=None):
     group = get_object_or_404(models.StudentGroup, pk=group_id)
     subject = None if subject_id is None else get_object_or_404(models.Subject, pk=subject_id)
     if request.method == 'POST':
-        form = forms.SubjectForm(request.POST, instance=subject)
+        form = forms.SubjectForm(request.POST, instance=subject, group=group)
         if form.is_valid():
             form.save()
             return redirect('subject_list', group_id=group.id)
     else:
-        form = forms.SubjectForm(instance=subject)
+        form = forms.SubjectForm(instance=subject, group=group)
     return render(request, 'schedule_editor/subject_form.html', {'form': form, 'subject': subject, 'group': group})
 
 

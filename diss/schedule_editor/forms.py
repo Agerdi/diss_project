@@ -19,6 +19,11 @@ class SubjectForm(forms.ModelForm):
         ]
         model = models.Subject
 
+    def __init__(self, *args, **kwargs):
+        group = kwargs.pop('group')
+        super().__init__(*args, **kwargs)
+        self.fields['semester'].queryset = models.Semester.objects.filter(student_group=group)
+
 
 class SubjectClassForm(forms.ModelForm):
     """ Форма редактирования занятия дистанции """
