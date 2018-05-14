@@ -131,7 +131,7 @@ class StudentGroup(Model):
         (DISTANCE, 'заочная')
     )
 
-    name = CharField('наименование', max_length=30)
+    name = CharField('наименование', max_length=30, unique=True)
     year = IntegerField('год поступления')
     qualification = CharField('квалификация', max_length=3, choices=QUALIFICATION)
     form = CharField('форма обучения', max_length=2, choices=FORM)
@@ -244,10 +244,10 @@ class Semester(Model):
     student_group = ForeignKey('StudentGroup', on_delete=CASCADE, verbose_name='учебная группа')
     year = IntegerField('календарный год')
     semester = CharField('семестр', max_length=3, choices=SEMESTER)
-    begin_study = DateField('начало теоретического обучения')
-    end_study = DateField('конец теоретического обучения')
-    begin_exams = DateField('начало экзаменационной сессии')
-    end_exams = DateField('конец экзаменационной сессии')
+    begin_study = DateField('начало теоретического обучения', blank=True, null=True)
+    end_study = DateField('конец теоретического обучения', blank=True, null=True)
+    begin_exams = DateField('начало экзаменационной сессии', blank=True, null=True)
+    end_exams = DateField('конец экзаменационной сессии', blank=True, null=True)
 
     class Meta:
         verbose_name = 'семестр'
@@ -263,11 +263,17 @@ class Semester(Model):
 
     def get_study_period(self):
         """ Период обучения """
-        return '%s – %s' % (self.begin_study.strftime('%Y.%m.%d'), self.end_study.strftime('%Y.%m.%d'))
+        if self.begin_study is None or self.end_study is None:
+            return ""
+        else:
+            return '%s – %s' % (self.begin_study.strftime('%Y.%m.%d'), self.end_study.strftime('%Y.%m.%d'))
 
     def get_exams_period(self):
         """ Сессия """
-        return '%s – %s' % (self.begin_exams.strftime('%Y.%m.%d'), self.end_exams.strftime('%Y.%m.%d'))
+        if self.begin_exams is None or self.end_exams is None:
+            return ""
+        else:
+            return '%s – %s' % (self.begin_exams.strftime('%Y.%m.%d'), self.end_exams.strftime('%Y.%m.%d'))
 
     def get_semester(self):
         begin = self.year
