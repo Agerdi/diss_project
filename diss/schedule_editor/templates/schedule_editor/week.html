@@ -1,204 +1,85 @@
 {% extends 'schedule_editor/menu.html' %}
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12">
-                <h1>Редактор расписания{% if group %} {{ group }}{% endif %}</h1>
-                <div id="graph"></div>
-                <a href="{% url 'week' prev_week.year prev_week.month prev_week.day %}" class="btn btn-primary">Предыдущая неделя</a>
-                <a href="{% url 'week' next_week.year next_week.month next_week.day %}" class="btn btn-primary">Следующая неделя</a>
-                <span class="form-inline">
-                    <span class="form-group">
-                        <label for="group">Группа</label>
-                        <select id="group" class="form-control" onchange="changeGroup(event)">
-                            <option value="">------</option>
-                            {% for g in groups %}
-                                <option value="{{ g.id }}"{% if g == group %} selected{% endif %}>{{ g }}</option>
-                            {% endfor %}
-                        </select>
-                    </span>
-                </span>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>Редактор расписания{% if group %} {{ group }}{% endif %}</h1>
+            <div id="week" class="grid-container"></div>
+            <div class="ui-widget">
+                <label>Группа</label>
+                <select id="comboboxGroup" class="comb">
+                    <option value="">Выберите группу...</option>
+                    {% for student_g in student_group_list %}
+                    <option value="{{ student_g.id }}" {% if request.GET.group|first == student_g.id|stringformat:"d" %} selected{% endif %}>{{ student_g.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="ui-widget">
+                <label>Преподаватель</label>
+                <select id="comboboxTeacher" class="comb">
+                    <option value="">Выберите преподавателя...</option>
+                    {% for teacher in teachers_list %}
+                    <option value="{{ teacher.id }}" {% if request.GET.teacher|first == teacher.id|stringformat:"d" %} selected{% endif %}>{{ teacher }}</option>
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="ui-widget">
+                <label>Аудитория</label>
+                <select id="comboboxRoom" class="comb">
+                    <option value="">Выберите аудиторию...</option>
+                    {% for room in rooms_list %}
+                    <option value="{{ room.id }}" {% if request.GET.room|first == room.id|stringformat:"d" %} selected{% endif %}>{{ room }}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
 {% block scripts %}
-    <script>
-        var start = new Date({{ start|date:"U" }}000);
-        var svgNS = "http://www.w3.org/2000/svg";
-        var width = ($('.container').prop('clientWidth') - 60) / 6;
-        var events = [
-            {% for event in events %}
-                {
-                    id: "{{ event.id }}",
-                    name: "{{ event.name }}",
-                    teacher: "{{ event.teacher }}",
-                    description: "{{ event.description }}",
-                    room: "{{ event.room }}",
-                    discipline: "{{ event.discipline }}",
-                    begin: new Date({{ event.begin|date:'U' }}000),
-                    end: new Date({{ event.end|date:'U' }}000)
-                }{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ];
+<script>
+    $(function() {
+        var days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+        var hours = ['h8', 'h9', 'h10', 'h11', 'h12', 'h13', 'h14', 'h15', 'h16', 'h17', 'h18', 'h19'];
 
-        var svg = document.createElementNS(svgNS, 'svg');
-        svg.setAttribute('width', '100%');
-        svg.setAttribute('height', '611');
-
-        // Фоновая сетка
-        function createHourRect(x, y) {
-            var rect = document.createElementNS(svgNS, 'rect');
-            rect.setAttribute('x', x);
-            rect.setAttribute('y', y);
-            rect.setAttribute('width', (width - 6).toString());
-            rect.setAttribute('height', '50');
-            rect.setAttribute('fill', 'white');
-            rect.setAttribute('stroke', 'black');
-            rect.setAttribute('stroke-opacity', '0.5');
-            rect.setAttribute('opacity', '0.5');
-            svg.appendChild(rect);
+        // Легенда по часам
+        for (var h = 0; h < hours.length; h++) {
+            var new_div = $('<div class="text-right"></div>');
+            new_div.html('' + (8 + h) + ':00');
+            new_div.addClass(hours[h]);
+            new_div.addClass('legend-left');
+            $('#week').append(new_div);
         }
 
-        // Отметки часов
-        function createHourLabel(hour, y) {
-            var hourLabel = hour + 8;
-            var text = document.createElementNS(svgNS, 'text');
-            text.setAttribute('x', '0');
-            text.setAttribute('y', y);
-            text.setAttribute('dy', "11");
-            text.innerHTML = ((hourLabel < 10) ? '0' : '') + hourLabel + '.00';
-            svg.appendChild(text);
+        // Легенда по дням
+        for (var d = 0; d < days.length; d++) {
+            var new_div = $('<div class="text-center"></div>');
+            new_div.html(days[d]);
+            new_div.addClass('legend-top');
+            new_div.addClass(days[d]);
+            $('#week').append(new_div);
         }
 
-        // Отметки даты
-        function createDayLabel(dayOfWeek, x) {
-            var currentDate = new Date(start);
-            currentDate.setDate(currentDate.getDate() + dayOfWeek + 1); <!--Добавил +1, чтоб скорректировать дату в сетке-->
-            var text = document.createElementNS(svgNS, 'text');
-            text.setAttribute('x', x);
-            text.setAttribute('y', '0');
-            text.setAttribute('dy', "9");
-            text.innerHTML = currentDate.toISOString().slice(0, 10);
-            svg.appendChild(text);
-        }
-        //Переход на другую страницу по клику на событие.
-        function click(event) {
-            //window.location.href = "{% url 'index' %}";
-            var lol = event.target;
-            lol.setAttribute("fill", "red");
-            //lol.setAttribute("x", "50");
-        }
-
-        //Передвижение элемента
-        function move(event) {
-            var rect1 = event.target;
-            var x = y = 0;
-            <!--var x = rect1.getAttribute("x")-->
-            <!--var y = rect1.getAttribute("y")-->
-            document.onmousemove=function(e){
-                <!--x = e.PageX;-->
-                <!--y = e.PageY;-->
-                x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-                y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-                <!--left=rect1.offsetLeft;-->
-                <!--top=rect1.offsetTop;-->
-                <!--left = x - left;-->
-                <!--top = y - top;-->
-
-                <!--document.onmousemove=function(e){-->
-                    <!--x = e.PageX;-->
-                    <!--y = e.PageY;-->
-                    <!--rect.style.top = y - top 'px';-->
-                    <!--rect.style.left = x - left 'px';-->
-                    rect1.setAttribute("x", x);
-                    rect1.setAttribute("y", y);
-                <!--}-->
-
-            }
-            document.onmouseup=function() {
-                document.onmousedown = function() {}
-                document.onmousemove = function() {}
+        // Рисуем сетку часов
+        for (var h = 0; h < hours.length; h++) {
+            for (var d = 0; d < days.length; d++) {
+                var new_hour = $('<div class="border">&nbsp;</div>');
+                new_hour.addClass(hours[h]);
+                new_hour.addClass(days[d]);
+                $('#week').append(new_hour);
             }
         }
+    });
 
-        function changeGroup(event) {
-            var options = event.target.children;
-            for (var i = 0; i < options.length; i++) {
-                if (options[i].selected) {
-                    window.location.href = "{% url 'week' request.resolver_match.kwargs.year request.resolver_match.kwargs.month request.resolver_match.kwargs.day %}" + options[i].value;
-                }
-            }
-        }
-
-        // Прямоугольник с событием
-        function createEvent(x, y, event) {
-            var rect = document.createElementNS(svgNS, 'rect');
-            rect.setAttribute('x', x);
-            rect.setAttribute('y', y);
-            rect.setAttribute('width', (width - 16).toString());
-            rect.setAttribute('height', '79');
-            rect.setAttribute('fill', 'lightblue');
-            rect.setAttribute('stroke', 'black');
-            rect.setAttribute('data-id', event.id);
-            rect.setAttribute('onclick', 'click(event)');
-            rect.setAttribute('onmousedown', 'move(event)');
-            svg.appendChild(rect);
-
-            var wrap1 = document.createElementNS(svgNS, 'switch');
-            var wrap2 = document.createElementNS(svgNS, 'foreignObject');
-            wrap2.setAttribute('x', x + 5);
-            wrap2.setAttribute('y', y + 5);
-            wrap2.setAttribute('width', (width - 26).toString());
-            wrap2.setAttribute('height', '69');
-
-            var par = document.createElement('p');
-            par.innerHTML = event.name + ' ' + event.discipline + ' ' + event.room + ' ' + event.teacher + ' ' + event.description;
-
-            wrap2.appendChild(par);
-            wrap1.appendChild(wrap2);
-            svg.appendChild(wrap1);
-        }
-
-        var hourLabelWidth = 35;
-        var dayLabelHeight = 10;
-        var hourHeight = 50;
-
-        // Сетка дней
-        for (var i = 0; i < 6; i++) {
-            var x = hourLabelWidth + i * width;
-
-            // Сетка часов
-            for (var j = 0; j < 12; j++) {
-                var y = dayLabelHeight + j * hourHeight;
-                createHourRect(x.toString(), y.toString());
-                if (i === 0)
-                    createHourLabel(j, y);
-            }
-            createDayLabel(i, x);
-        }
-
-        // Вывод событий
-        for (i = 0; i < events.length; i++) {
-            // Минуты с начала недели
-            var time = (events[i].begin.getTime() - start.getTime()) / 1000 / 60;
-
-            // День недели
-            var dayOfWeek = Math.floor(time / (24 * 60));
-
-            // Минуты с начала дня
-            var minutes = time % (24 * 60);
-
-            // Если событие за пределами рабочего дня - не показываем его
-            if ((minutes < (8 * 60)) || (minutes > (20 * 60)))
-                continue;
-
-            x = 40 + dayOfWeek * width;
-            y = 10 + (minutes - (8 * 60)) / 60 * 50;
-            createEvent(x, y, events[i]);
-        }
-
-        var graph = document.getElementById('graph');
-        graph.appendChild(svg);
-    </script>
+    $("select").change(function(){
+        var $select = $(this);
+        if ($select.attr('id') == "comboboxGroup")
+            window.location.href = "?group=" + $select.val();
+        if ($select.attr('id') == "comboboxTeacher")
+            window.location.href = "?teacher=" + $select.val();
+        if ($select.attr('id') == "comboboxRoom")
+            window.location.href = "?room=" + $select.val();
+    });
+</script>
 {% endblock %}

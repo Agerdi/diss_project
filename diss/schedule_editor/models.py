@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from django.db.models import (CASCADE, CharField, DateField, DateTimeField, DO_NOTHING, ForeignKey, IntegerField, Model,
                               OneToOneField, TextField)
 
-
 class Subject(Model):
     """ Дисциплина """
 
@@ -220,6 +219,7 @@ class Event(Model):
                                verbose_name='занятие дисциплины')
     room = ForeignKey('Room', on_delete=DO_NOTHING, verbose_name='аудитория')
     teacher = ForeignKey('Teacher', on_delete=DO_NOTHING, blank=True, null=True, verbose_name='преподаватель')
+
     begin = DateTimeField('начало')
     end = DateTimeField('окончание')
     event_type = CharField('тип события', max_length=30)

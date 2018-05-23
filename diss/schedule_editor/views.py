@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.shortcuts import render, get_object_or_404, redirect
 
+from schedule_editor.filters import GroupFilter
 from . import models, forms
 
 
@@ -252,13 +253,18 @@ def week(request, year, month, day, group_id=None):
         events = models.Event.objects.filter(begin__gte=start, end__lt=end)
     # else:
         # events = models.Event.objects.filter(begin__gte=start, end__lt=end, participants=group_id)
+    f = GroupFilter(request.GET, queryset=models.StudentGroup.objects.all())
+
     return render(request, 'schedule_editor/week.html', {
         'start': start,
         'prev_week': start - datetime.timedelta(days=7),
         'next_week': start + datetime.timedelta(days=7),
-        'events': events,
+        'events': f.queryset,
         'group': None if group_id is None else Group.objects.get(pk=group_id),
         'groups': Group.objects.all(),
+        'student_group_list': models.StudentGroup.objects.all(),
+        'teachers_list': models.Teacher.objects.all(),
+        'rooms_list': models.Room.objects.all()
     })
 
 

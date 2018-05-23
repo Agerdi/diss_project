@@ -1,4 +1,96 @@
-svg {
-    font-size: 10pt;
-    shape-rendering: crispEdges;
+.grid-container {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 4% 16% 16% 16% 16% 16% 16%;
+    grid-template-rows: 5% 5%;
+}
+
+.comb {
+    width: 330px;
+}
+
+.ui-widget {
+    display: inline-block;
+}
+
+.legend-left {
+    grid-column: 1;
+    font-size: 8pt;
+}
+
+.mon {
+    grid-column: 2;
+}
+
+.tue {
+    grid-column: 3;
+}
+
+.wed {
+    grid-column: 4;
+}
+
+.thu {
+    grid-column: 5;
+}
+
+.fri {
+    grid-column: 6;
+}
+
+.sat {
+    grid-column: 7;
+}
+
+.legend-top {
+    grid-row: 1;
+    font-size: 8pt;
+}
+
+.h8 {
+    grid-row: 2;
+}
+
+.h9 {
+    grid-row: 3;
+}
+
+.h10 {
+    grid-row: 4;
+}
+
+.h11 {
+    grid-row: 5;
+}
+
+.h12 {
+    grid-row: 6;
+}
+
+.h13 {
+    grid-row: 7;
+}
+
+.h14 {
+    grid-row: 8;
+}
+
+.h15 {
+    grid-row: 9;
+}
+
+.h16 {
+    grid-row: 10;
+}
+
+.h17 {
+    grid-row: 11;
+}
+
+.h18 {
+    grid-row: 12;
+}
+
+.h19 {
+    grid-row: 13;
 }

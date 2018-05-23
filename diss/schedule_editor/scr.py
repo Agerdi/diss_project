@@ -28,11 +28,14 @@ new_group.save()
 
 '''Семестр'''
 graphic = tree.find('.//ГрафикУчПроцесса')
-curse_count = 0 #т.к. первый тег КУРС не имеет атрибута СЕМЕСТР
+curse_count = 1
 all_disciplines = tree.findall('.//СтрокиПлана//Строка')
 
 for curse in graphic.findall('.//Курс'):
     sem_count = 1
+    if 'КаникулНед' not in curse.attrib:
+        print("curse")
+        continue
     for sem in curse.findall('.//Семестр'):
         # new_semester = models.Semester()
         if (int(sem.get('Ном')) == sem_count):
