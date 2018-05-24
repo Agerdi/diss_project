@@ -31,7 +31,7 @@ class TestStudentGroup(TestCase):
         response = client.post('/group/update/%d/' % self.student_group.id, {
             'name': 'М-ИВТ-17',
             'year': 2017,
-            'qualification': models.StudentGroup.MAGISTER,
+            'qualification': models.StudentGroup.MASTER,
             'form': models.StudentGroup.FULL_TIME
         })
         self.assertEqual(response.status_code, 302)
@@ -53,7 +53,7 @@ class TestStudentGroup(TestCase):
         response = client.post('/group/create/', {
             'name': 'М-ИВТ-17',
             'year': 2017,
-            'qualification': models.StudentGroup.MAGISTER,
+            'qualification': models.StudentGroup.MASTER,
             'form': models.StudentGroup.FULL_TIME
         })
         self.assertEqual(response.status_code, 302)

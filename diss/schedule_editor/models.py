@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 
 from django.db.models import (CASCADE, CharField, DateField, DateTimeField, DO_NOTHING, ForeignKey, IntegerField, Model,
-                              OneToOneField, TextField)
+                              OneToOneField, TextField, BooleanField)
+
 
 class Subject(Model):
     """ Дисциплина """
@@ -23,15 +24,12 @@ class Subject(Model):
     def __str__(self):
         return self.name
 
-    def get_total_hours(self):
-        return self.lecture_hours + self.lab_work_hours + self.practice_hours + self.student_work_hours + self.control_hours 
-
 
 class SubjectClass(Model):
     """ Занятие дисциплины """
 
     LECTURE = 'LEC'
-    LAB_WORK= 'LAB'
+    LAB_WORK = 'LAB'
     PRACTICE = 'PRA'
 
     CLASS_TYPES = (
@@ -68,7 +66,7 @@ class SubjectClass(Model):
         (EVEN_WEEK, 'чётные недели')
     )
 
-    subject = ForeignKey('Subject', on_delete=CASCADE)
+    subject = ForeignKey('Subject', on_delete=CASCADE, verbose_name='дисциплина')
     class_type = CharField('тип занятия', max_length=3, choices=CLASS_TYPES)
     teacher = ForeignKey('Teacher', on_delete=DO_NOTHING, blank=True, null=True, verbose_name='преподаватель')
     weekday = IntegerField('день недели', choices=WEEKDAY)
@@ -114,12 +112,12 @@ class StudentGroup(Model):
 
     SPECIALIST = 'SPC'
     BACHELOR = 'BAC'
-    MAGISTER = 'MAG'
+    MASTER = 'MAG'
 
     QUALIFICATION = (
         (SPECIALIST, 'специалитет'),
         (BACHELOR, 'бакалавриат'),
-        (MAGISTER, 'магистратура')
+        (MASTER, 'магистратура')
     )
 
     FULL_TIME = 'OC'
@@ -151,14 +149,14 @@ class StudentGroup(Model):
                 answer = 10  # очный специалитет, 5 лет
             elif self.qualification == StudentGroup.BACHELOR:
                 answer = 8  # очный бакалавриат, 4 года
-            elif self.qualification == StudentGroup.MAGISTER:
+            elif self.qualification == StudentGroup.MASTER:
                 answer = 4  # очная магистратура, 2 года
         elif self.form == StudentGroup.DISTANCE:
             if self.qualification == StudentGroup.SPECIALIST:
                 answer = 12  # заочный специалитет, 6 лет
             elif self.qualification == StudentGroup.BACHELOR:
                 answer = 10  # заочный бакалавриат, 5 лет
-            elif self.qualification == StudentGroup.MAGISTER:
+            elif self.qualification == StudentGroup.MASTER:
                 answer = 5  # заочная магистратура, 2,5 года
         return answer
 
@@ -185,6 +183,7 @@ class Room(Model):
 
     number = CharField('номер', max_length=50)
     building = CharField('здание', max_length=50)
+    computer = BooleanField('компьютерная', default=False)
 
     class Meta:
         verbose_name = 'аудитория'
@@ -267,6 +266,7 @@ class Semester(Model):
             return ""
         else:
             return '%s – %s' % (self.begin_study.strftime('%Y.%m.%d'), self.end_study.strftime('%Y.%m.%d'))
+    get_study_period.short_description = "Период обучения"
 
     def get_exams_period(self):
         """ Сессия """
@@ -274,6 +274,7 @@ class Semester(Model):
             return ""
         else:
             return '%s – %s' % (self.begin_exams.strftime('%Y.%m.%d'), self.end_exams.strftime('%Y.%m.%d'))
+    get_exams_period.short_description = "Сессия"
 
     def get_semester(self):
         begin = self.year
