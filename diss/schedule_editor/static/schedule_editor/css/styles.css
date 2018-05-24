@@ -1,16 +1,9 @@
 .grid-container {
     display: grid;
+    height: calc(100vh - 210px);
     width: 100%;
-    grid-template-columns: 4% 16% 16% 16% 16% 16% 16%;
-    grid-template-rows: 5% 5%;
-}
-
-.comb {
-    width: 330px;
-}
-
-.ui-widget {
-    display: inline-block;
+    grid-template-columns: 2em auto auto auto auto auto auto;
+    grid-template-rows: 1em auto auto auto auto auto auto auto auto auto auto auto auto;
 }
 
 .legend-left {
