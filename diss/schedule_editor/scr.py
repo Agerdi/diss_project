@@ -3,7 +3,7 @@ from schedule_editor import models
 import xml.etree.ElementTree as ET
 
 
-tree = ET.parse('D:\\Education\\Диссертация\\РУП\\020302_18-1ФИИТ.plm.xml')
+tree = ET.parse('D:\\Education\\Диссертация\\РУП\\020302_17-1ФИИТ.plm.xml')
 root = tree.getroot()
 
 '''Группа'''

@@ -5,6 +5,12 @@
     grid-template-rows: 5% 5%;
 }
 
+.event {
+    background: #ff0000;
+    line-height: 3px;
+    position: relative;
+}
+
 .comb {
     width: 330px;
 }

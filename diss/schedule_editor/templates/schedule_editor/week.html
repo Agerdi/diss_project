@@ -4,7 +4,9 @@
     <div class="row">
         <div class="col-12">
             <h1>Редактор расписания{% if group %} {{ group }}{% endif %}</h1>
-            <div id="week" class="grid-container"></div>
+            <div id="week" class="grid-container">
+                <!--<div id="asd" class="event"></div>-->
+            </div>
             <div class="ui-widget">
                 <label>Группа</label>
                 <select id="comboboxGroup" class="comb">
@@ -70,8 +72,14 @@
                 $('#week').append(new_hour);
             }
         }
+
+        for (var e = 0; e < 3; e++) {
+            var new_div = $('<div class="event"></div>');
+            $('#week').append(new_div);
+        }
     });
 
+    //Комбобоксы
     $("select").change(function(){
         var $select = $(this);
         if ($select.attr('id') == "comboboxGroup")
