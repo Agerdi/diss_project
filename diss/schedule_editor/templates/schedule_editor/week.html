@@ -4,37 +4,38 @@
     <div class="row">
         <div class="col-12">
             <h1>Редактор расписания{% if group %} {{ group }}{% endif %}</h1>
-            <div id="week" class="grid-container">
-                <!--<div id="asd" class="event"></div>-->
+            <div class="form-row">
+
+                <div class="form-group col-4">
+                    <label>Группа</label>
+                    <select id="comboboxGroup" class="form-control">
+                        <option value="">Выберите группу...</option>
+                        {% for student_g in student_group_list %}
+                        <option value="{{ student_g.id }}" {% if request.GET.group|first == student_g.id|stringformat:"d" %} selected{% endif %}>{{ student_g.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-4">
+                    <label>Преподаватель</label>
+                    <select id="comboboxTeacher" class="form-control">
+                        <option value="">Выберите преподавателя...</option>
+                        {% for teacher in teachers_list %}
+                        <option value="{{ teacher.id }}" {% if request.GET.teacher|first == teacher.id|stringformat:"d" %} selected{% endif %}>{{ teacher }}</option>
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-4">
+                    <label>Аудитория</label>
+                    <select id="comboboxRoom" class="form-control">
+                        <option value="">Выберите аудиторию...</option>
+                        {% for room in rooms_list %}
+                        <option value="{{ room.id }}" {% if request.GET.room|first == room.id|stringformat:"d" %} selected{% endif %}>{{ room }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
-            <div class="ui-widget">
-                <label>Группа</label>
-                <select id="comboboxGroup" class="comb">
-                    <option value="">Выберите группу...</option>
-                    {% for student_g in student_group_list %}
-                    <option value="{{ student_g.id }}" {% if request.GET.group|first == student_g.id|stringformat:"d" %} selected{% endif %}>{{ student_g.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="ui-widget">
-                <label>Преподаватель</label>
-                <select id="comboboxTeacher" class="comb">
-                    <option value="">Выберите преподавателя...</option>
-                    {% for teacher in teachers_list %}
-                    <option value="{{ teacher.id }}" {% if request.GET.teacher|first == teacher.id|stringformat:"d" %} selected{% endif %}>{{ teacher }}</option>
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="ui-widget">
-                <label>Аудитория</label>
-                <select id="comboboxRoom" class="comb">
-                    <option value="">Выберите аудиторию...</option>
-                    {% for room in rooms_list %}
-                    <option value="{{ room.id }}" {% if request.GET.room|first == room.id|stringformat:"d" %} selected{% endif %}>{{ room }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+            <div id="week" class="grid-container"></div>
         </div>
     </div>
 </div>
@@ -42,7 +43,14 @@
 {% block scripts %}
 <script>
     $(function() {
-        var days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+        var days = {
+            'mon': '{{ mon|date:"D Y.m.d" }}',
+            'tue': '{{ tue|date:"D Y.m.d" }}',
+            'wed': '{{ wed|date:"D Y.m.d" }}',
+            'thu': '{{ thu|date:"D Y.m.d" }}',
+            'fri': '{{ fri|date:"D Y.m.d" }}',
+            'sat': '{{ sat|date:"D Y.m.d" }}'
+        };
         var hours = ['h8', 'h9', 'h10', 'h11', 'h12', 'h13', 'h14', 'h15', 'h16', 'h17', 'h18', 'h19'];
 
         // Легенда по часам
@@ -55,27 +63,22 @@
         }
 
         // Легенда по дням
-        for (var d = 0; d < days.length; d++) {
+        for (var d in days) {
             var new_div = $('<div class="text-center"></div>');
             new_div.html(days[d]);
             new_div.addClass('legend-top');
-            new_div.addClass(days[d]);
+            new_div.addClass(d);
             $('#week').append(new_div);
         }
 
         // Рисуем сетку часов
         for (var h = 0; h < hours.length; h++) {
-            for (var d = 0; d < days.length; d++) {
+            for (var d in days) {
                 var new_hour = $('<div class="border">&nbsp;</div>');
                 new_hour.addClass(hours[h]);
-                new_hour.addClass(days[d]);
+                new_hour.addClass(d);
                 $('#week').append(new_hour);
             }
-        }
-
-        for (var e = 0; e < 3; e++) {
-            var new_div = $('<div class="event"></div>');
-            $('#week').append(new_div);
         }
     });
 

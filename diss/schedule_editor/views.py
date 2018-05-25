@@ -256,7 +256,12 @@ def week(request, year, month, day, group_id=None):
     f = GroupFilter(request.GET, queryset=models.StudentGroup.objects.all())
 
     return render(request, 'schedule_editor/week.html', {
-        'start': start,
+        'mon': start + datetime.timedelta(days=0),
+        'tue': start + datetime.timedelta(days=1),
+        'wed': start + datetime.timedelta(days=2),
+        'thu': start + datetime.timedelta(days=3),
+        'fri': start + datetime.timedelta(days=4),
+        'sat': start + datetime.timedelta(days=5),
         'prev_week': start - datetime.timedelta(days=7),
         'next_week': start + datetime.timedelta(days=7),
         'events': f.queryset,
